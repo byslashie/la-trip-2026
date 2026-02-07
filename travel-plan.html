@@ -4,26 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>2026 LA & Cruise | Travel App</title>
-    <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Leaflet CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <title>2026 NCL Bliss 美國行</title>
 
+    <!-- Core Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Poppins:wght@400;600;700;800&family=Roboto+Mono:wght@500&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom Styles -->
     <style>
         body {
-            font-family: 'Noto Sans TC', 'Noto Sans JP', sans-serif;
-            background-color: #F3F4F6;
+            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+            background-color: #f5f5f4;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+        }
+
+        .font-body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
         }
 
         .hide-scroll::-webkit-scrollbar {
@@ -45,868 +51,993 @@
             opacity: 0;
         }
 
-        #map-container {
-            z-index: 1;
+        .slide-up-enter-active {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .gps-pulse {
-            width: 14px;
-            height: 14px;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            background-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4);
-            animation: pulse-blue 2s infinite;
+        .slide-up-leave-active {
+            transition: all 0.2s ease-in;
         }
 
-        @keyframes pulse-blue {
-            0% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-            }
+        .slide-up-enter-from {
+            transform: translateY(30px);
+            opacity: 0;
         }
 
-        .leaflet-popup-content-wrapper {
-            border-radius: 12px;
-            padding: 0;
-            overflow: hidden;
+        .slide-up-leave-to {
+            transform: translateY(-20px);
+            opacity: 0;
         }
 
-        .leaflet-popup-content {
-            margin: 0;
-            width: 200px !important;
+        .bg-sunset {
+            background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%);
         }
 
-        .prose ul {
-            list-style-type: disc;
-            padding-left: 1.2rem;
+        .bg-ocean {
+            background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%);
         }
 
-        .prose li {
-            margin-bottom: 0.2rem;
+        /* Floating Bottom Nav */
+        .glass-nav-island {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 
-<body class="text-slate-700 h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col text-slate-800 selection:bg-rose-200">
 
     <div id="app"
-        class="flex flex-col h-full max-w-md mx-auto w-full bg-white shadow-2xl relative sm:rounded-xl sm:my-4 sm:h-[95vh] sm:border-4 sm:border-slate-100">
+        class="flex flex-col h-full w-full max-w-md mx-auto bg-[#fafaf9] relative shadow-2xl sm:rounded-[2.5rem] sm:my-4 sm:h-[95vh] sm:border-[8px] sm:border-stone-800 overflow-hidden ring-1 ring-slate-900/5">
 
-        <!-- Header -->
-        <header class="bg-indigo-900 text-white shrink-0 z-20 shadow-md">
-            <div class="p-4 flex justify-between items-center">
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="overflow-hidden">
-                        <h1 class="text-base sm:text-lg font-bold tracking-wide flex items-center gap-2 truncate">
-                            🇺🇸 2026 美國行 <span
-                                class="text-[10px] bg-indigo-700 px-1.5 py-0.5 rounded text-indigo-200 whitespace-nowrap">LA
-                                & Cruise</span>
-                        </h1>
-                        <p class="text-xs text-indigo-200 mt-0.5 font-light tracking-wider truncate">2/11 - 2/24 (14天)
-                        </p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 shrink-0 ml-2">
-                    <!-- Google Maps 外連按鈕 -->
-                    <a href="https://www.google.com/maps/d/u/0/edit?mid=1t8mZMS8VSCAJKqJiClO2UfADz9RPchs&ll=26.747109881469584%2C-111.86976465000001&z=5"
-                        target="_blank"
-                        class="bg-indigo-800/50 p-2 rounded-lg text-indigo-200 hover:text-white transition-all flex items-center justify-center"
-                        title="開啟 Google 我的地圖">
-                        <i class="ph-bold ph-arrow-square-out text-lg"></i>
-                    </a>
-
-                    <!-- 視圖切換 -->
-                    <div class="flex bg-indigo-800/50 p-1 rounded-lg ml-1">
-                        <button @click="viewMode = 'plan'"
-                            :class="viewMode === 'plan' ? 'bg-white text-indigo-900 shadow-sm' : 'text-indigo-300'"
-                            class="p-2 rounded-md transition-all"><i
-                                class="ph-bold ph-calendar-check text-lg"></i></button>
-                        <button @click="viewMode = 'guide'"
-                            :class="viewMode === 'guide' ? 'bg-white text-indigo-900 shadow-sm' : 'text-indigo-300'"
-                            class="p-2 rounded-md transition-all"><i class="ph-bold ph-boat text-lg"></i></button>
-                        <button @click="viewMode = 'shop'"
-                            :class="viewMode === 'shop' ? 'bg-white text-indigo-900 shadow-sm' : 'text-indigo-300'"
-                            class="p-2 rounded-md transition-all"><i
-                                class="ph-bold ph-list-checks text-lg"></i></button>
-                        <button @click="viewMode = 'map'"
-                            :class="viewMode === 'map' ? 'bg-white text-indigo-900 shadow-sm' : 'text-indigo-300'"
-                            class="p-2 rounded-md transition-all"><i
-                                class="ph-bold ph-map-trifold text-lg"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 日期滑動列 (僅在行程模式顯示) -->
-            <div v-if="viewMode === 'plan'" class="flex overflow-x-auto hide-scroll px-2 pb-3 space-x-2 snap-x">
-                <div v-for="(day, index) in days" :key="index" @click="currentDayIdx = index"
-                    class="snap-center shrink-0 flex flex-col items-center justify-center w-14 h-16 rounded-xl cursor-pointer transition-all border-2"
-                    :class="currentDayIdx === index ? 'bg-white text-indigo-900 border-white shadow-lg scale-105' : 'bg-indigo-800/40 text-indigo-200 border-transparent hover:bg-indigo-700'">
-                    <span class="text-[10px] font-medium opacity-80">{{ day.shortDate }}</span>
-                    <span class="text-base font-bold">D{{ index + 1 }}</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto bg-slate-50 relative hide-scroll">
-
-            <!-- VIEW: 行程表 (Plan) -->
-            <transition name="fade" mode="out-in">
-                <div v-if="viewMode === 'plan'" :key="currentDayIdx" class="p-4 pb-24">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm mb-4 border border-slate-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h2 class="text-2xl font-bold text-slate-800">{{ currentDay.date }}</h2>
-                                <input v-model="currentDay.title"
-                                    class="text-sm font-medium text-indigo-600 w-full mt-1 bg-transparent border-none p-0 focus:ring-0"
-                                    placeholder="輸入當日主題">
-                            </div>
-                            <!-- 天氣顯示 (API 連動) -->
-                            <div class="text-right">
-                                <div v-if="weather.temp" class="flex flex-col items-end animate-pulse-once">
-                                    <div class="flex items-center justify-end gap-1 text-indigo-500">
-                                        <i class="text-2xl" :class="weatherIcon"></i>
-                                        <span class="text-xl font-bold font-mono">{{ weather.temp }}°C</span>
-                                    </div>
-                                    <span class="text-[10px] text-slate-400">LA 即時氣溫</span>
-                                </div>
-                                <div v-else class="text-xs text-slate-300 flex items-center gap-1">
-                                    <i class="ph-duotone ph-spinner animate-spin"></i> 載入天氣...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 航班卡片 -->
-                    <div v-if="currentDay.flight"
-                        class="mb-6 relative bg-gradient-to-r from-sky-600 to-indigo-600 rounded-2xl text-white shadow-lg overflow-hidden group">
-                        <button @click="currentDay.flight = null"
-                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition text-white/70 hover:text-white"><i
-                                class="ph-bold ph-x"></i></button>
-                        <div class="p-4 relative z-0">
-                            <div class="flex justify-between items-center mb-1 pt-1">
-                                <div class="flex flex-col items-center w-1/3">
-                                    <div class="text-2xl font-black font-mono">{{ currentDay.flight.startTime }}</div>
-                                    <div class="text-[10px] opacity-80">出發</div>
-                                    <div class="text-sm font-bold opacity-90">{{ currentDay.flight.startAirport }}</div>
-                                </div>
-                                <div class="flex flex-col items-center justify-center w-1/3 px-2">
-                                    <i
-                                        class="ph-fill ph-airplane text-2xl mb-1 transform rotate-90 text-yellow-300"></i>
-                                    <div class="text-[10px] font-mono tracking-widest opacity-80">{{
-                                        currentDay.flight.number }}</div>
-                                </div>
-                                <div class="flex flex-col items-center w-1/3">
-                                    <div class="text-2xl font-black font-mono">{{ currentDay.flight.endTime }}</div>
-                                    <div class="text-[10px] opacity-80">抵達 <span
-                                            v-if="currentDay.flight.arrivalOffset!=0"
-                                            class="bg-red-500 px-1 rounded text-[8px] font-bold">{{
-                                            currentDay.flight.arrivalOffset > 0 ? '+1' : '-1' }}</span></div>
-                                    <div class="text-sm font-bold opacity-90">{{ currentDay.flight.endAirport }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 行程列表 -->
-                    <div class="relative pl-4 border-l-2 border-indigo-100 space-y-6">
-                        <div v-for="(item, idx) in currentDay.items" :key="idx" class="relative group">
-                            <div class="absolute -left-[21px] top-3 w-3 h-3 rounded-full border-2 border-white shadow-sm"
-                                :class="getDotColor(item.type)"></div>
-                            <div
-                                class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                                <div class="flex items-start gap-3">
-                                    <!-- 時間 -->
-                                    <div class="flex flex-col items-center w-14 shrink-0 pt-1 relative">
-                                        <div
-                                            class="text-sm font-bold text-slate-700 font-mono leading-none tracking-tight h-6 flex items-center justify-center w-full">
-                                            {{ item.time || '--:--' }}
-                                        </div>
-                                        <input v-model="item.time" type="time"
-                                            class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer">
-                                        <div
-                                            class="text-[10px] text-slate-400 font-medium bg-slate-100 px-1.5 py-0.5 rounded mt-1 whitespace-nowrap">
-                                            {{ getTypeLabel(item.type) }}</div>
-                                    </div>
-
-                                    <!-- 內容 -->
-                                    <div class="flex-1 min-w-0">
-                                        <input v-model="item.activity"
-                                            class="block w-full font-bold text-slate-800 bg-transparent border-none p-0 focus:ring-0"
-                                            placeholder="行程名稱...">
-                                        <div class="flex items-center gap-1 mt-1">
-                                            <i class="ph-fill ph-map-pin text-indigo-400 text-xs"></i>
-                                            <input v-model="item.location"
-                                                class="flex-1 text-xs text-slate-500 bg-transparent border-none p-0 focus:ring-0 truncate"
-                                                placeholder="地點">
-                                        </div>
-                                        <div class="flex items-center gap-1 mt-1">
-                                            <i class="ph-bold ph-info text-orange-400 text-xs"></i>
-                                            <input v-model="item.note"
-                                                class="flex-1 text-xs text-orange-600/90 bg-transparent border-none p-0 focus:ring-0 truncate"
-                                                placeholder="備註">
-                                        </div>
-                                        <!-- 連結按鈕 (如果是連結類型) -->
-                                        <a v-if="item.link" :href="item.link" target="_blank"
-                                            class="mt-2 inline-flex items-center gap-1 text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg border border-indigo-100 hover:bg-indigo-100">
-                                            <i class="ph-bold ph-house-line"></i> 查看詳情/預訂
-                                        </a>
-                                    </div>
-                                    <!-- 操作 -->
-                                    <div class="flex flex-col gap-2">
-                                        <a v-if="item.location"
-                                            :href="`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location)}`"
-                                            target="_blank" class="text-indigo-500 hover:bg-indigo-50 p-1.5 rounded"><i
-                                                class="ph-bold ph-navigation-arrow"></i></a>
-                                        <button @click="removeItem(idx)"
-                                            class="text-slate-300 hover:text-red-500 p-1.5 rounded"><i
-                                                class="ph-bold ph-trash"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button @click="addItem"
-                            class="flex items-center gap-2 text-indigo-400 hover:text-indigo-600 text-sm font-medium px-2 py-1"><i
-                                class="ph-bold ph-plus-circle"></i> 新增行程</button>
-                    </div>
-                </div>
-            </transition>
-
-            <!-- VIEW: 郵輪攻略 (Guide) -->
-            <div v-if="viewMode === 'guide'" class="p-4 pb-24 space-y-6">
-                <!-- 標題與切換 -->
-                <div class="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl p-6 text-white shadow-lg mb-6">
-                    <h2 class="text-2xl font-bold flex items-center gap-2"><i class="ph-duotone ph-boat"></i> NCL Bliss
-                        攻略</h2>
-                    <p class="text-blue-100 text-xs mt-1 mb-4">設施、美食與健康指南</p>
-
-                    <div class="flex gap-2 text-xs font-bold">
-                        <button @click="guideTab = 'decks'"
-                            :class="guideTab === 'decks' ? 'bg-white text-blue-600' : 'bg-blue-700/50 text-blue-100'"
-                            class="px-4 py-2 rounded-lg transition">甲板地圖</button>
-                        <button @click="guideTab = 'health'"
-                            :class="guideTab === 'health' ? 'bg-white text-blue-600' : 'bg-blue-700/50 text-blue-100'"
-                            class="px-4 py-2 rounded-lg transition">健康與設施</button>
-                    </div>
-                </div>
-
-                <!-- TAB: 甲板地圖 (Decks) -->
-                <div v-if="guideTab === 'decks'" class="space-y-4">
-                    <p class="text-xs text-slate-400 text-center mb-2">點擊層數查看詳細設施分佈與推薦美食</p>
-
-                    <div v-for="deck in shipDecks" :key="deck.level"
-                        class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <!-- 甲板標題 (可點擊展開) -->
-                        <div @click="deck.open = !deck.open"
-                            class="bg-slate-50 px-4 py-3 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold font-mono">
-                                    {{ deck.level }}</div>
-                                <span class="font-bold text-slate-700">{{ deck.name }}</span>
-                            </div>
-                            <i :class="deck.open ? 'ph-caret-up' : 'ph-caret-down'" class="ph-bold text-slate-400"></i>
-                        </div>
-
-                        <!-- 展開內容 (地圖示意) -->
-                        <div v-show="deck.open" class="p-4 bg-white">
-                            <!-- 船頭到船尾的示意圖 -->
-                            <div
-                                class="flex flex-col gap-1 relative border-l-2 border-dashed border-indigo-100 ml-2 pl-6 py-2">
-                                <!-- Forward (船頭) -->
-                                <div class="relative group">
-                                    <div
-                                        class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-100 border-2 border-indigo-300 flex items-center justify-center text-[8px] font-bold text-indigo-600">
-                                        前</div>
-                                    <div class="mb-4" v-if="deck.forward.length > 0">
-                                        <span
-                                            class="text-xs font-bold text-indigo-400 uppercase tracking-wider block mb-1">FORWARD
-                                            (船頭)</span>
-                                        <div class="space-y-2">
-                                            <div v-for="loc in deck.forward"
-                                                class="text-sm py-2 px-3 rounded border border-slate-100 bg-slate-50 relative">
-                                                <div class="flex justify-between items-start">
-                                                    <span class="font-bold">{{ loc.name }}</span>
-                                                    <span v-if="loc.free"
-                                                        class="text-[10px] bg-green-100 text-green-600 px-1.5 rounded font-bold">Free</span>
-                                                    <span v-else
-                                                        class="text-[10px] bg-amber-50 text-amber-600 px-1.5 rounded font-bold">$</span>
-                                                </div>
-                                                <div v-if="loc.note"
-                                                    class="text-xs text-slate-500 mt-1 flex items-start gap-1">
-                                                    <i
-                                                        class="ph-fill ph-star text-orange-400 text-xs shrink-0 mt-0.5"></i>
-                                                    {{ loc.note }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Mid (船中) -->
-                                <div class="relative group">
-                                    <div
-                                        class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-100 border-2 border-indigo-300 flex items-center justify-center text-[8px] font-bold text-indigo-600">
-                                        中</div>
-                                    <div class="mb-4" v-if="deck.mid.length > 0">
-                                        <span
-                                            class="text-xs font-bold text-indigo-400 uppercase tracking-wider block mb-1">MIDSHIP
-                                            (船中)</span>
-                                        <div class="space-y-2">
-                                            <div v-for="loc in deck.mid"
-                                                class="text-sm py-2 px-3 rounded border border-slate-100 bg-slate-50 relative">
-                                                <div class="flex justify-between items-start">
-                                                    <span class="font-bold">{{ loc.name }}</span>
-                                                    <span v-if="loc.free"
-                                                        class="text-[10px] bg-green-100 text-green-600 px-1.5 rounded font-bold">Free</span>
-                                                    <span v-else
-                                                        class="text-[10px] bg-amber-50 text-amber-600 px-1.5 rounded font-bold">$</span>
-                                                </div>
-                                                <div v-if="loc.note"
-                                                    class="text-xs text-slate-500 mt-1 flex items-start gap-1">
-                                                    <i
-                                                        class="ph-fill ph-star text-orange-400 text-xs shrink-0 mt-0.5"></i>
-                                                    {{ loc.note }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Aft (船尾) -->
-                                <div class="relative group">
-                                    <div
-                                        class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-indigo-100 border-2 border-indigo-300 flex items-center justify-center text-[8px] font-bold text-indigo-600">
-                                        後</div>
-                                    <div v-if="deck.aft.length > 0">
-                                        <span
-                                            class="text-xs font-bold text-indigo-400 uppercase tracking-wider block mb-1">AFT
-                                            (船尾)</span>
-                                        <div class="space-y-2">
-                                            <div v-for="loc in deck.aft"
-                                                class="text-sm py-2 px-3 rounded border border-slate-100 bg-slate-50 relative">
-                                                <div class="flex justify-between items-start">
-                                                    <span class="font-bold">{{ loc.name }}</span>
-                                                    <span v-if="loc.free"
-                                                        class="text-[10px] bg-green-100 text-green-600 px-1.5 rounded font-bold">Free</span>
-                                                    <span v-else
-                                                        class="text-[10px] bg-amber-50 text-amber-600 px-1.5 rounded font-bold">$</span>
-                                                </div>
-                                                <div v-if="loc.note"
-                                                    class="text-xs text-slate-500 mt-1 flex items-start gap-1">
-                                                    <i
-                                                        class="ph-fill ph-star text-orange-400 text-xs shrink-0 mt-0.5"></i>
-                                                    {{ loc.note }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB: 健康與設施 (Health & Info) -->
-                <div v-if="guideTab === 'health'" class="space-y-6 animate-fade-in">
-                    <!-- 健康控重 -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div class="bg-emerald-50 px-4 py-3 border-b border-emerald-100 flex items-center gap-2">
-                            <i class="ph-fill ph-heartbeat text-emerald-600 text-xl"></i>
-                            <h3 class="font-bold text-emerald-800">低碳高蛋白控重指南</h3>
-                        </div>
-                        <div class="p-4 prose text-sm text-slate-600">
-                            <div class="mb-3">
-                                <strong class="text-slate-800 block mb-1">Garden Café (Deck 16) 策略：</strong>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li><strong>第一圈只拿：</strong>生菜沙拉、深色蔬菜、烤肉區的牛排/雞胸/魚排。</li>
-                                    <li><strong>避開澱粉：</strong>麵包區、義大利麵、馬鈴薯泥、Pizza。</li>
-                                    <li><strong>早餐推薦：</strong>現做 Omelet (全加料不加起司) + 燻鮭魚 + 黑咖啡。</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <strong class="text-slate-800 block mb-1">主餐廳 (Taste/Savor) 點餐：</strong>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    <li>主餐選<strong>牛排 (Steak) 或 烤魚 (Grilled Fish)</strong>。</li>
-                                    <li>配菜薯條換成「Steamed Vegetables (蒸蔬菜)」。</li>
-                                    <li>甜點跳過蛋糕，選「起司盤 (Cheese Plate)」或「無糖冰淇淋」。</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 船上設施 -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div class="bg-sky-50 px-4 py-3 border-b border-sky-100 flex items-center gap-2">
-                            <i class="ph-fill ph-game-controller text-sky-600 text-xl"></i>
-                            <h3 class="font-bold text-sky-800">必玩設施 (需預約)</h3>
-                        </div>
-                        <div class="p-4 grid grid-cols-2 gap-3">
-                            <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100">
-                                <div class="text-2xl mb-1">🏎️</div>
-                                <div class="font-bold text-sm">海上賽車</div>
-                                <div class="text-[10px] text-slate-400">Race Track (Deck 19)</div>
-                            </div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100">
-                                <div class="text-2xl mb-1">🔫</div>
-                                <div class="font-bold text-sm">雷射槍戰</div>
-                                <div class="text-[10px] text-slate-400">Laser Tag (Deck 18)</div>
-                            </div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100">
-                                <div class="text-2xl mb-1">🌊</div>
-                                <div class="font-bold text-sm">水上滑梯</div>
-                                <div class="text-[10px] text-slate-400">Ocean Loops (Deck 16)</div>
-                            </div>
-                            <div class="bg-slate-50 p-3 rounded-lg text-center border border-slate-100">
-                                <div class="text-2xl mb-1">🎭</div>
-                                <div class="font-bold text-sm">百老匯秀</div>
-                                <div class="text-[10px] text-slate-400">Bliss Theater (Deck 7)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: 購物/待辦清單 (Shop & Todo) -->
-            <div v-if="viewMode === 'shop'" class="p-4 pb-24 space-y-6">
-                <!-- 藥妝必買區 -->
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-3 flex items-center gap-2">
-                        <i class="ph-duotone ph-pill text-rose-500"></i> 美國藥妝終極採購
-                    </h2>
-                    <div class="space-y-4">
-                        <div v-for="(group, gIdx) in shoppingGroups" :key="gIdx"
-                            class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                            <div
-                                class="bg-rose-50 px-4 py-2 border-b border-rose-100 flex justify-between items-center">
-                                <span class="text-sm font-bold text-rose-700">{{ group.category }}</span>
-                                <span class="text-[10px] bg-white px-2 py-0.5 rounded-full text-rose-400">{{
-                                    group.items.filter(i=>i.done).length }}/{{ group.items.length }}</span>
-                            </div>
-                            <div class="divide-y divide-slate-50">
-                                <label v-for="(item, iIdx) in group.items" :key="iIdx"
-                                    class="flex items-start gap-3 p-3 cursor-pointer hover:bg-slate-50 transition">
-                                    <div class="pt-1">
-                                        <input type="checkbox" v-model="item.done"
-                                            class="w-5 h-5 rounded text-rose-500 focus:ring-rose-500 border-slate-300">
-                                    </div>
-                                    <div class="flex-1">
-                                        <!-- 商品圖片 -->
-                                        <div v-if="item.image"
-                                            class="mb-2 w-full h-32 bg-white rounded-lg border border-slate-100 flex items-center justify-center overflow-hidden">
-                                            <img :src="item.image" class="h-full object-contain" alt="商品圖片">
-                                        </div>
-                                        <div class="font-bold text-sm text-slate-700"
-                                            :class="{'line-through text-slate-400': item.done}">{{ item.name }}</div>
-                                        <div class="text-xs text-slate-500 mt-0.5">{{ item.desc }}</div>
-                                        <div
-                                            class="text-[10px] font-mono font-bold text-rose-500 mt-1 bg-rose-50 inline-block px-1.5 rounded">
-                                            ~{{ item.price }}</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 待辦事項區 -->
-                <div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-3 flex items-center gap-2">
-                        <i class="ph-duotone ph-check-square text-emerald-500"></i> 行前 To-Do
-                    </h2>
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 divide-y divide-slate-100">
-                        <label v-for="(todo, tIdx) in todos" :key="tIdx"
-                            class="flex items-center gap-3 p-4 cursor-pointer hover:bg-slate-50 transition">
-                            <input type="checkbox" v-model="todo.done"
-                                class="w-5 h-5 rounded text-emerald-500 focus:ring-emerald-500 border-slate-300">
-                            <span class="text-sm font-medium text-slate-700 flex-1"
-                                :class="{'line-through text-slate-400': todo.done}">{{ todo.text }}</span>
-                            <span v-if="todo.tag"
-                                class="text-[10px] px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full">{{ todo.tag
-                                }}</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: 地圖 (Map) -->
-            <div v-if="viewMode === 'map'" class="h-full flex flex-col relative">
-                <div id="map" class="flex-1 w-full h-full bg-slate-200 z-0"></div>
-                <div v-if="isMapLoading"
-                    class="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-indigo-600">
-                    <i class="ph-duotone ph-spinner animate-spin text-4xl mb-2"></i><span
-                        class="text-xs font-bold">載入地點中...</span></div>
+        <!-- 🔒 Lock Screen -->
+        <div v-if="!isAuthenticated"
+            class="absolute inset-0 z-50 bg-gradient-to-br from-rose-500 via-orange-400 to-amber-300 flex flex-col items-center justify-center p-8 transition-all duration-500">
+            <div
+                class="w-full max-w-xs text-center bg-white/20 backdrop-blur-xl rounded-[2rem] p-8 shadow-2xl border border-white/30">
                 <div
-                    class="absolute bottom-20 left-4 right-4 bg-white/90 backdrop-blur rounded-xl p-3 shadow-lg border border-white/50 z-10 flex justify-between items-center">
-                    <div class="text-sm font-bold text-slate-800">📍 地圖上有 {{ mapMarkersCount }} 個標記</div>
-                    <div class="flex gap-2">
-                        <button @click="initMap" class="p-2 bg-indigo-100 text-indigo-600 rounded-lg"><i
-                                class="ph-bold ph-arrows-clockwise"></i></button>
-                    </div>
+                    class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg transform -rotate-6">
+                    <i class="ph-fill ph-sun-horizon text-4xl text-rose-500"></i>
                 </div>
+                <h2 class="text-3xl font-black mb-1 text-white tracking-tight drop-shadow-sm">VACATION '26</h2>
+                <p class="text-white/90 text-sm mb-8 font-medium tracking-wide">LA & Mexico Cruise</p>
+                <div class="relative">
+                    <input type="password" v-model="password"
+                        class="w-full bg-black/10 border border-white/20 rounded-2xl px-4 py-4 text-center text-xl text-white outline-none focus:bg-black/20 transition-all placeholder:text-white/50 font-bold tracking-widest"
+                        placeholder="••••" @keyup.enter="checkPass">
+                </div>
+                <button @click="checkPass"
+                    class="w-full mt-4 bg-white text-rose-500 font-bold py-4 rounded-2xl active:scale-[0.98] transition-all shadow-lg hover:bg-rose-50">Let's
+                    Go!</button>
+                <p v-if="passError"
+                    class="text-white text-xs mt-6 font-bold animate-pulse flex items-center justify-center gap-1 bg-rose-500/80 py-1 px-3 rounded-full mx-auto w-fit">
+                    <i class="ph-fill ph-warning-circle"></i> 密碼錯誤
+                </p>
             </div>
+        </div>
 
-            <!-- VIEW: 分帳 (Money) -->
-            <div v-if="viewMode === 'money'" class="p-4 pb-24">
-                <!-- (保留原有的分帳功能) -->
-                <div class="bg-emerald-600 text-white rounded-2xl p-6 shadow-lg mb-6 text-center relative">
-                    <div class="absolute top-4 right-4 flex flex-col items-end">
-                        <label class="text-[10px] text-emerald-200 mb-1">匯率 (USD)</label>
-                        <input v-model.number="exchangeRate" type="number"
-                            class="w-16 text-right text-xs text-emerald-900 rounded px-1 py-0.5">
+        <!-- 📱 Main App -->
+        <template v-else>
+            <!-- Top Bar (Slimmed Down) -->
+            <header class="shrink-0 z-20 bg-white border-b border-stone-100 relative">
+                <!-- Header Gradient -->
+                <div class="px-5 pt-10 pb-4 bg-sunset text-white relative overflow-hidden transition-all duration-300"
+                    :class="viewMode === 'plan' ? 'h-auto' : 'h-auto'">
+                    <i
+                        class="ph-duotone ph-plant text-white absolute -right-4 -bottom-8 text-[120px] opacity-20 rotate-12"></i>
+                    <i class="ph-duotone ph-waves text-white absolute -left-4 top-0 text-[100px] opacity-10"></i>
+
+                    <div class="flex justify-between items-center mb-1 relative z-10">
+                        <div>
+                            <h1 class="text-xl font-black tracking-tight flex items-center gap-2 drop-shadow-sm">
+                                USA Trip <span class="text-amber-200">2026</span>
+                            </h1>
+                        </div>
+
+                        <!-- Top Right Actions -->
+                        <div class="flex gap-2">
+                            <button @click="viewMode = 'money'"
+                                :class="viewMode === 'money' ? 'bg-white text-rose-500' : 'bg-white/20 text-white hover:bg-white/30'"
+                                class="p-2 rounded-xl transition-all backdrop-blur-md border border-white/20 shadow-lg active:scale-95 flex items-center justify-center w-9 h-9">
+                                <i :class="viewMode === 'money' ? 'ph-fill ph-currency-dollar' : 'ph-bold ph-currency-dollar'"
+                                    class="text-lg"></i>
+                            </button>
+                            <a href="https://www.google.com/maps/d/u/0/edit?mid=1t8mZMS8VSCAJKqJiClO2UfADz9RPchs&usp=sharing"
+                                target="_blank"
+                                class="bg-white/20 p-2 rounded-xl text-white hover:bg-white/30 transition-all backdrop-blur-md border border-white/20 shadow-lg active:scale-95 flex items-center justify-center w-9 h-9">
+                                <i class="ph-fill ph-map-trifold text-lg"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="text-sm opacity-80 mb-1">總支出 Total</div>
-                    <div class="text-4xl font-bold font-mono">$ {{ totalExpense.toLocaleString() }}</div>
-                    <div class="text-lg font-bold text-emerald-200 mt-1">≈ NT$ {{ Math.round(totalExpense *
-                        exchangeRate).toLocaleString() }}</div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-4 mb-6 border border-slate-100">
-                    <h3 class="text-sm font-bold text-slate-700 mb-3">新增消費</h3>
-                    <div class="flex gap-2 mb-2">
-                        <input v-model="newExpense.item" placeholder="項目 (如: Uber)"
-                            class="flex-1 bg-slate-50 border-none rounded-lg text-sm px-3 py-2">
-                        <select v-model="newExpense.payer"
-                            class="w-20 bg-slate-50 border-none rounded-lg text-sm px-1 py-2">
-                            <option value="我">我</option>
-                            <option value="公費">公費</option>
-                        </select>
-                    </div>
-                    <div class="flex gap-2">
-                        <input v-model.number="newExpense.amount" type="number" placeholder="USD 金額"
-                            class="w-full bg-slate-50 border-none rounded-lg text-sm pl-3 pr-3 py-2 font-mono">
-                        <button @click="addExpense"
-                            class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold"><i
-                                class="ph-bold ph-plus"></i></button>
+                <!-- Date Scroller (Centered & Sticky) -->
+                <div v-if="viewMode === 'plan'" class="bg-white py-3 shadow-sm relative z-10 border-b border-stone-100">
+                    <div class="flex overflow-x-auto hide-scroll space-x-3 px-4 snap-x justify-start"
+                        id="date-scroller">
+                        <div v-for="(day, index) in days" :key="index" @click="scrollToDay(index)"
+                            class="snap-center shrink-0 flex flex-col items-center justify-center w-[3.5rem] h-[4.5rem] rounded-[1rem] cursor-pointer transition-all duration-300 border-2 select-none relative overflow-hidden group"
+                            :class="currentDayIdx === index ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-200 scale-100' : 'bg-white border-stone-100 text-stone-400 hover:border-rose-200'">
+                            <span class="text-[9px] font-bold uppercase tracking-wide"
+                                :class="currentDayIdx === index ? 'opacity-90' : 'opacity-60'">{{
+                                day.shortDate.split('/')[1] }} Feb</span>
+                            <span class="text-lg font-black leading-none mt-0.5">D{{ index + 1 }}</span>
+                        </div>
                     </div>
                 </div>
+            </header>
 
-                <div class="space-y-3">
-                    <div v-for="(exp, idx) in expenses" :key="idx"
-                        class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-xs font-bold">
-                                {{ exp.payer.charAt(0) }}</div>
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto bg-[#fafaf9] relative scroll-smooth pb-32" ref="mainContainer">
+
+                <!-- VIEW: PLAN -->
+                <transition name="slide-up" mode="out-in">
+                    <div v-if="viewMode === 'plan'" :key="'plan-'+currentDayIdx" class="p-5 min-h-full">
+
+                        <!-- Date Header -->
+                        <div class="flex justify-between items-end mb-6 px-1">
                             <div>
-                                <div class="font-bold text-slate-700 text-sm">{{ exp.item }}</div>
+                                <h2 class="text-3xl font-black text-stone-800 tracking-tighter">{{ currentDay.date }}
+                                </h2>
+                                <p class="text-sm font-bold text-rose-500 mt-1 font-body">{{ currentDay.title }}</p>
+                            </div>
+                            <div v-if="weather"
+                                class="flex flex-col items-end bg-white px-3 py-2 rounded-2xl shadow-sm border border-stone-100">
+                                <div class="flex items-center gap-1.5 text-stone-700">
+                                    <i class="ph-fill text-xl text-amber-400"
+                                        :class="getWeatherIcon(weather.weathercode)"></i>
+                                    <span class="text-xl font-black font-mono">{{ Math.round(weather.temperature)
+                                        }}°</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <span class="font-mono font-bold text-slate-700">$ {{ exp.amount.toLocaleString() }}</span>
-                            <button @click="removeExpense(idx)" class="text-slate-300 hover:text-red-400"><i
-                                    class="ph-fill ph-x-circle"></i></button>
+
+                        <!-- Hero Image -->
+                        <div v-if="currentDay.heroImage"
+                            class="mb-8 rounded-[2rem] overflow-hidden shadow-xl border-4 border-white relative group h-56 transform transition-all cursor-pointer"
+                            onclick="window.open(this.querySelector('img').src)">
+                            <div
+                                class="absolute top-3 right-3 z-30 bg-black/40 text-white text-[10px] px-2.5 py-1 rounded-full backdrop-blur-md font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <i class="ph-bold ph-magnifying-glass-plus"></i> FULL SIZE
+                            </div>
+                            <img :src="currentDay.heroImage"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none">
+                            </div>
+                            <div class="absolute bottom-4 left-5 text-white pointer-events-none">
+                                <div
+                                    class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30 text-[10px] font-bold inline-flex items-center gap-1 mb-1">
+                                    <i class="ph-fill ph-star"></i> HIGHLIGHT
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flight Card -->
+                        <div v-if="currentDay.flight" class="mb-8 relative group">
+                            <div
+                                class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] text-white p-6 relative overflow-hidden shadow-xl shadow-indigo-200">
+                                <i class="ph-fill ph-cloud text-white absolute top-4 left-10 opacity-20 text-6xl"></i>
+                                <div class="flex justify-between items-center relative z-10">
+                                    <div class="text-center">
+                                        <div class="text-4xl font-black font-mono tracking-tighter">{{
+                                            currentDay.flight.startTime }}</div>
+                                        <div
+                                            class="text-[10px] font-bold text-indigo-200 mt-1 tracking-widest uppercase">
+                                            {{ currentDay.flight.startAirport }}</div>
+                                    </div>
+                                    <div class="flex flex-col items-center px-4 w-full">
+                                        <div
+                                            class="text-xs font-bold text-white mb-2 tracking-widest bg-white/20 px-2 py-1 rounded-lg backdrop-blur-sm">
+                                            {{ currentDay.flight.number }}</div>
+                                        <div class="w-full h-[2px] bg-white/30 relative rounded-full">
+                                            <div
+                                                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-500 rounded-full p-1 border border-white/30">
+                                                <i class="ph-fill ph-airplane text-white rotate-90 text-xs"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text-[10px] text-indigo-200 mt-2 font-medium">Flight</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-4xl font-black font-mono tracking-tighter">{{
+                                            currentDay.flight.endTime }}</div>
+                                        <div
+                                            class="text-[10px] font-bold text-indigo-200 mt-1 tracking-widest uppercase">
+                                            {{ currentDay.flight.endAirport }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="relative pl-3 space-y-6">
+                            <!-- Line -->
+                            <div class="absolute left-[18px] top-6 bottom-6 w-[2px] bg-stone-200 rounded-full"></div>
+
+                            <div v-for="(item, idx) in currentDay.items" :key="idx" class="relative pl-8">
+                                <!-- Dot -->
+                                <div class="absolute left-[10px] top-7 w-[18px] h-[18px] rounded-full border-[3px] border-white shadow-md z-10 transition-colors duration-300"
+                                    :class="{
+                                    'bg-amber-400': item.type === 'hotel',
+                                    'bg-cyan-500': item.type === 'boat',
+                                    'bg-indigo-400': item.type === 'flight',
+                                    'bg-rose-400': item.type === 'food' || item.type === 'shop',
+                                    'bg-emerald-400': item.type === 'spot' || item.type === 'transport'
+                                 }"></div>
+
+                                <!-- Content -->
+                                <div :class="item.isStrategy ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100 shadow-amber-100' : 'bg-white border-stone-100 shadow-stone-100'"
+                                    class="p-5 rounded-[1.8rem] border shadow-md transition-all duration-300 relative overflow-hidden group">
+
+                                    <!-- Decorative BG for Strategy -->
+                                    <div v-if="item.isStrategy"
+                                        class="absolute right-0 top-0 w-24 h-24 bg-amber-100/50 rounded-bl-full opacity-50 -mr-4 -mt-4 transition-transform group-hover:scale-110">
+                                    </div>
+
+                                    <div class="flex items-start gap-4 relative z-10">
+                                        <!-- Time -->
+                                        <div class="w-12 shrink-0 flex flex-col items-center pt-1.5">
+                                            <div class="text-[13px] font-black text-stone-700 font-mono tracking-tight">
+                                                {{ item.time || '--:--' }}</div>
+                                        </div>
+
+                                        <!-- Details -->
+                                        <div class="flex-1 min-w-0 font-body">
+                                            <div
+                                                class="font-bold text-[17px] text-stone-800 mb-1.5 leading-snug flex items-center gap-2">
+                                                <span :class="{'text-amber-900': item.isStrategy}">{{ item.activity
+                                                    }}</span>
+                                                <i v-if="item.link"
+                                                    class="ph-bold ph-arrow-square-out text-stone-400 text-sm"></i>
+                                            </div>
+
+                                            <!-- Type Tag -->
+                                            <div class="flex flex-wrap gap-2 mb-3">
+                                                <span
+                                                    class="text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg border tracking-wide"
+                                                    :class="{
+                                                    'text-amber-600 border-amber-100 bg-amber-50': item.type === 'hotel',
+                                                    'text-cyan-600 border-cyan-100 bg-cyan-50': item.type === 'boat',
+                                                    'text-rose-600 border-rose-100 bg-rose-50': item.type === 'food' || item.type === 'shop',
+                                                    'text-indigo-600 border-indigo-100 bg-indigo-50': item.type === 'flight',
+                                                    'text-emerald-600 border-emerald-100 bg-emerald-50': item.type === 'spot' || item.type === 'transport',
+                                                    'text-amber-800 border-amber-200 bg-amber-100': item.isStrategy
+                                                 }">
+                                                    {{ item.isStrategy ? 'STRATEGY' : item.type }}
+                                                </span>
+                                                <div v-if="item.location && !item.isStrategy"
+                                                    class="flex items-center gap-1 text-[11px] text-stone-400 font-medium truncate max-w-[150px]">
+                                                    <i class="ph-fill ph-map-pin"></i>
+                                                    <span class="truncate">{{ item.location.split(',')[0] }}</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Note -->
+                                            <div v-if="item.note"
+                                                class="text-[13px] leading-relaxed p-3.5 rounded-2xl border"
+                                                :class="item.isStrategy ? 'bg-white/60 border-amber-200 text-amber-900 font-medium' : 'bg-stone-50 border-stone-100 text-stone-600'">
+                                                <div class="flex gap-2">
+                                                    <i class="ph-fill mt-0.5 shrink-0 text-lg"
+                                                        :class="item.isStrategy ? 'ph-lightbulb text-amber-500' : 'ph-info text-stone-300'"></i>
+                                                    <span class="whitespace-pre-line">{{ item.note }}</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Navigation Button (Prominent) -->
+                                            <div v-if="item.location && !item.isStrategy" class="mt-4">
+                                                <a :href="getGoogleMapsLink(item.location)" target="_blank"
+                                                    class="flex items-center justify-between w-full bg-stone-50 hover:bg-rose-50 border border-stone-200 hover:border-rose-200 rounded-2xl px-3 py-2.5 group/btn transition-all">
+                                                    <div class="flex items-center gap-3 overflow-hidden">
+                                                        <div
+                                                            class="bg-white p-1.5 rounded-xl shadow-sm border border-stone-100 group-hover/btn:border-rose-100">
+                                                            <img src="https://www.google.com/images/branding/product/2x/maps_96in128dp.png"
+                                                                class="w-5 h-5">
+                                                        </div>
+                                                        <div class="flex flex-col min-w-0">
+                                                            <span
+                                                                class="text-[10px] text-stone-400 font-bold uppercase tracking-wider">Navigate
+                                                                to</span>
+                                                            <span
+                                                                class="text-xs font-bold text-stone-700 truncate group-hover/btn:text-rose-700 font-body">{{
+                                                                item.location }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <i
+                                                        class="ph-bold ph-arrow-right text-stone-400 group-hover/btn:text-rose-500 group-hover/btn:translate-x-1 transition-transform"></i>
+                                                </a>
+                                            </div>
+
+                                            <!-- Link Button for Strategy -->
+                                            <div v-if="item.link && item.isStrategy" class="mt-3">
+                                                <a :href="item.link" target="_blank"
+                                                    class="w-full block text-center bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-3 rounded-2xl transition shadow-lg shadow-amber-200">
+                                                    開啟地圖路線
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+
+                <!-- VIEW: TRANSPORT -->
+                <div v-if="viewMode === 'transport'" class="p-5 space-y-6 animate-fade-in">
+                    <div
+                        class="bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-[2rem] p-6 shadow-xl relative overflow-hidden">
+                        <i
+                            class="ph-duotone ph-car-profile text-indigo-500 absolute -right-6 -bottom-6 opacity-20 text-[160px]"></i>
+                        <h2 class="text-2xl font-black flex items-center gap-2 relative z-10">交通攻略</h2>
+                        <p class="text-indigo-200 text-xs mt-1 relative z-10 font-medium">Uber / Lyft / Waymo 省錢代碼</p>
+                    </div>
+
+                    <div class="grid gap-3">
+                        <div v-for="(app, idx) in promoCodes" :key="idx" :class="[app.bg, app.textColor]"
+                            class="rounded-[1.5rem] p-5 shadow-md relative overflow-hidden transition-transform active:scale-[0.98]">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h4 class="text-xl font-black tracking-tight">{{ app.app }}</h4>
+                                    <p class="text-[10px] opacity-80 font-bold uppercase tracking-wider mt-0.5">{{
+                                        app.desc }}</p>
+                                </div>
+                                <div class="bg-white/20 p-2.5 rounded-full backdrop-blur-sm">
+                                    <i class="ph-fill ph-tag text-lg"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div v-for="(c, cIdx) in app.codes" :key="cIdx"
+                                    class="bg-white/10 backdrop-blur-md rounded-xl p-3 flex justify-between items-center border border-white/10">
+                                    <span class="font-mono font-bold text-sm tracking-wider select-all">{{ c.code
+                                        }}</span>
+                                    <span
+                                        class="text-[10px] font-bold opacity-90 bg-white/20 px-2 py-0.5 rounded text-white">{{
+                                        c.desc }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden divide-y divide-stone-50">
+                        <div v-for="(item, idx) in transportPlan" :key="idx"
+                            class="p-4 hover:bg-stone-50 transition-colors">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-black bg-stone-800 text-white px-2 py-0.5 rounded">{{
+                                        item.date }}</span>
+                                    <span class="text-sm font-bold text-stone-700 font-mono">{{ item.time }}</span>
+                                </div>
+                                <span class="text-2xl">{{ item.icon }}</span>
+                            </div>
+                            <div class="flex justify-between items-start font-body">
+                                <div>
+                                    <h4 class="font-bold text-stone-800 text-sm mb-1">{{ item.route }}</h4>
+                                    <div class="flex gap-2 text-[11px] text-stone-500 font-medium">
+                                        <span class="bg-stone-100 px-1.5 py-0.5 rounded text-stone-600">{{ item.type
+                                            }}</span>
+                                        <span class="bg-stone-100 px-1.5 py-0.5 rounded text-stone-600">{{ item.dist
+                                            }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block font-black text-emerald-600 text-sm">{{ item.cost }}</span>
+                                </div>
+                            </div>
+                            <div v-if="item.strategy"
+                                class="mt-3 text-[11px] bg-amber-50 text-amber-900 p-3 rounded-xl border border-amber-100 font-medium leading-relaxed flex gap-2">
+                                <i class="ph-fill ph-lightbulb mt-0.5 shrink-0 text-amber-500"></i>
+                                {{ item.strategy }}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        </main>
+                <!-- VIEW: GUIDE -->
+                <div v-if="viewMode === 'guide'" class="p-5 space-y-6 animate-fade-in">
+                    <div class="bg-ocean rounded-[2rem] p-6 text-white shadow-xl shadow-cyan-500/20">
+                        <h2 class="text-2xl font-black flex items-center gap-3">
+                            <i class="ph-fill ph-anchor-simple text-3xl opacity-80"></i>
+                            郵輪攻略
+                        </h2>
+                        <div class="flex gap-2 text-xs font-bold mt-6 overflow-x-auto hide-scroll pb-1">
+                            <button @click="guideTab = 'action'"
+                                :class="guideTab === 'action' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
+                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">登船行動</button>
+                            <button @click="guideTab = 'health'"
+                                :class="guideTab === 'health' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
+                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">餐飲規定</button>
+                            <button @click="guideTab = 'decks'"
+                                :class="guideTab === 'decks' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
+                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">甲板地圖</button>
+                        </div>
+                    </div>
 
+                    <div v-if="guideTab === 'action'" class="space-y-5">
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 p-1">
+                            <div class="bg-purple-50 rounded-[1.6rem] p-4 flex items-center gap-3 mb-2">
+                                <div class="bg-white p-2.5 rounded-full text-purple-600 shadow-sm"><i
+                                        class="ph-fill ph-users-three text-xl"></i></div>
+                                <h3 class="font-black text-purple-900">8人團體訂位</h3>
+                            </div>
+                            <div class="p-3 space-y-3">
+                                <div
+                                    class="bg-white border border-purple-100 rounded-3xl p-5 shadow-sm relative overflow-hidden">
+                                    <div
+                                        class="absolute right-0 top-0 w-20 h-20 bg-purple-50 rounded-bl-[3rem] -mr-8 -mt-8">
+                                    </div>
+                                    <span
+                                        class="text-[10px] font-black uppercase text-purple-400 mb-1 block tracking-wider">主聯絡人
+                                        (Room 9748)</span>
+                                    <div class="font-mono font-black text-2xl text-stone-800 tracking-tight">#61835154
+                                    </div>
+                                    <div class="text-stone-500 text-xs font-bold mt-1">CHEN, YUCHIEH & HUNGLIN</div>
+                                </div>
+                                <div class="space-y-2 font-body">
+                                    <div
+                                        class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836555</span>
+                                        <span class="text-stone-500 font-bold text-xs">CHEN, SHUCHUAN & SHUCHIEN</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836945</span>
+                                        <span class="text-stone-500 font-bold text-xs">HSU</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61835820</span>
+                                        <span class="text-stone-500 font-bold text-xs">HSU</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">
+                            <div class="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-3">
+                                <div class="bg-white p-2 rounded-full text-emerald-600 shadow-sm"><i
+                                        class="ph-fill ph-phone-call text-xl"></i></div>
+                                <h3 class="font-black text-emerald-900">房內電話攻略</h3>
+                            </div>
+                            <div class="p-5 space-y-4">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div
+                                        class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
+                                        <span class="font-mono font-black text-xl text-emerald-700 block">9748</span>
+                                        <span class="text-xs text-stone-500 font-bold">潔、泓</span>
+                                    </div>
+                                    <div
+                                        class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
+                                        <span class="font-mono font-black text-xl text-emerald-700 block">9746</span>
+                                        <span class="text-xs text-stone-500 font-bold">娟、倩</span>
+                                    </div>
+                                    <div
+                                        class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
+                                        <span class="font-mono font-black text-xl text-emerald-700 block">9742</span>
+                                        <span class="text-xs text-stone-500 font-bold">恆、詠</span>
+                                    </div>
+                                    <div
+                                        class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
+                                        <span class="font-mono font-black text-xl text-emerald-700 block">9740</span>
+                                        <span class="text-xs text-stone-500 font-bold">芳、瑞</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="guideTab === 'health'" class="space-y-4">
+                        <div class="bg-white border-l-[6px] border-rose-500 p-6 rounded-r-[1.5rem] shadow-sm relative">
+                            <h3 class="font-bold text-rose-600 flex items-center gap-2 mb-4 text-lg">
+                                <i class="ph-fill ph-warning-circle text-2xl"></i> 飲料規定 (嚴格)
+                            </h3>
+                            <div class="text-sm text-stone-600 space-y-3 font-body">
+                                <p><strong class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md text-xs">❌
+                                        禁止攜帶</strong><br>所有飲料（含水、汽水、果汁、啤酒、烈酒），無論手提或託運均不可上船。</p>
+                                <p><strong class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md text-xs">✅
+                                        例外允許</strong><br>葡萄酒 (需付 $15 開瓶費)、醫療/嬰兒需求。</p>
+                            </div>
+                            <div
+                                class="mt-5 bg-stone-100 p-4 rounded-2xl border border-stone-200 text-xs text-stone-600 leading-relaxed font-medium">
+                                <span
+                                    class="font-black bg-stone-800 text-white px-2 py-0.5 rounded-md text-[10px] mr-1 uppercase">Tip</span>
+                                務必攜帶 <strong class="text-stone-900">空保溫瓶</strong>！船上水龍頭可生飲，或去 Garden Café 裝水。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="guideTab === 'decks'" class="space-y-3">
+                        <div v-for="deck in shipDecks" :key="deck.level"
+                            class="bg-white rounded-[1.5rem] shadow-sm border border-stone-100 overflow-hidden">
+                            <div
+                                class="bg-stone-50 px-5 py-3 flex justify-between items-center border-b border-stone-100">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-9 h-9 rounded-xl bg-cyan-600 text-white flex items-center justify-center font-bold font-mono text-sm shadow-md shadow-cyan-200">
+                                        {{ deck.level }}</div>
+                                    <span class="font-bold text-stone-700 text-sm">{{ deck.name.split(' ')[2] ||
+                                        deck.name }}</span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div v-for="(place, i) in deck.aft" :key="i"
+                                    class="flex justify-between items-center py-3 border-b border-stone-50 last:border-0 hover:bg-stone-50 rounded-lg px-2 transition">
+                                    <span class="font-medium text-stone-600 text-sm">{{ place.name }}</span>
+                                    <span class="text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wide"
+                                        :class="place.free ? 'bg-emerald-100 text-emerald-600' : 'bg-stone-100 text-stone-400'">
+                                        {{ place.free ? 'Free' : 'Paid' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: SHOP -->
+                <div v-if="viewMode === 'shop'" class="p-5 space-y-6 animate-fade-in">
+                    <div class="bg-rose-500 text-white rounded-[2rem] p-6 shadow-xl relative overflow-hidden">
+                        <i
+                            class="ph-duotone ph-basket text-white absolute -right-6 -bottom-6 opacity-30 text-[140px] rotate-12"></i>
+                        <h2 class="text-2xl font-black flex items-center gap-2 relative z-10">購物清單</h2>
+                        <p class="text-rose-100 text-xs mt-1 relative z-10 font-medium font-mono tracking-wider">
+                            CHECKLIST</p>
+                    </div>
+
+                    <!-- Must Buy List Image -->
+                    <div class="rounded-[2rem] overflow-hidden shadow-lg border-4 border-white relative group">
+                        <div
+                            class="absolute top-2 right-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full backdrop-blur-md">
+                            <i class="ph-bold ph-eye"></i> 點擊放大
+                        </div>
+                        <img src="圖片/必買清單.png" class="w-full h-auto" alt="必買清單" onclick="window.open(this.src)">
+                    </div>
+
+                    <!-- Must Buy List Image 2 -->
+                    <div class="rounded-[2rem] overflow-hidden shadow-lg border-4 border-white relative group">
+                        <div
+                            class="absolute top-2 right-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full backdrop-blur-md">
+                            <i class="ph-bold ph-eye"></i> 點擊放大
+                        </div>
+                        <img src="圖片/必買清單2.png" class="w-full h-auto" alt="必買清單2" onclick="window.open(this.src)">
+                    </div>
+
+                    <!-- ToDo List (Checklist) - NOW AT TOP -->
+                    <div class="bg-white rounded-[2rem] shadow-md border-2 border-rose-100 overflow-hidden relative">
+                        <div class="bg-rose-50/50 px-6 py-4 border-b border-rose-100 flex justify-between items-center">
+                            <span
+                                class="font-black text-rose-600 text-sm flex items-center gap-2 uppercase tracking-wide">
+                                <i class="ph-fill ph-check-square-offset text-lg"></i> 行前必備 (Checklist)
+                            </span>
+                        </div>
+                        <div class="divide-y divide-slate-50">
+                            <div v-for="(todo, idx) in todos" :key="idx" @click="todo.done = !todo.done"
+                                class="flex items-center gap-4 p-5 hover:bg-rose-50/30 transition cursor-pointer group">
+                                <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors"
+                                    :class="todo.done ? 'bg-rose-500 border-rose-500' : 'border-stone-300 group-hover:border-rose-300'">
+                                    <i class="ph-bold ph-check text-white text-sm" v-if="todo.done"></i>
+                                </div>
+                                <div class="flex-1 text-sm font-bold transition-opacity"
+                                    :class="{'text-stone-300 line-through': todo.done, 'text-stone-700': !todo.done}">{{
+                                    todo.text }}</div>
+                                <span
+                                    class="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md font-bold uppercase">{{
+                                    todo.tag }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shopping Groups -->
+                    <div v-for="(group, gIdx) in shoppingGroups" :key="gIdx"
+                        class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">
+                        <div class="bg-stone-50 px-6 py-4 border-b border-stone-100 flex justify-between items-center">
+                            <span
+                                class="font-black text-rose-500 text-sm flex items-center gap-2 uppercase tracking-wide">
+                                {{ group.category }}
+                            </span>
+                        </div>
+                        <div class="divide-y divide-stone-50">
+                            <div v-for="(item, iIdx) in group.items" :key="iIdx" @click="item.done = !item.done"
+                                class="p-5 hover:bg-stone-50 transition cursor-pointer group relative">
+                                <div class="flex items-start gap-4 relative z-10">
+                                    <div class="w-6 h-6 mt-0.5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-all duration-300"
+                                        :class="item.done ? 'bg-rose-400 border-rose-400 scale-110' : 'border-stone-200 group-hover:border-rose-300'">
+                                        <i class="ph-bold ph-check text-white text-sm" v-if="item.done"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 font-body">
+                                        <div class="font-bold text-[15px] text-stone-800 transition-opacity"
+                                            :class="{'text-stone-300 line-through': item.done}">{{ item.name }}</div>
+                                        <div class="text-xs text-stone-400 mt-1 font-medium">{{ item.desc }}</div>
+
+                                        <div class="flex justify-between items-center mt-3">
+                                            <span
+                                                class="text-[11px] font-mono font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">{{
+                                                item.price }}</span>
+                                            <a v-if="item.link" :href="item.link" target="_blank" @click.stop
+                                                class="text-stone-400 hover:text-rose-500 text-xs flex items-center gap-1 bg-white border border-stone-200 px-3 py-1.5 rounded-full transition-all shadow-sm hover:shadow-md">
+                                                <i class="ph-bold ph-image"></i> 圖片
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- Thumbnail if exists -->
+                                    <div v-if="item.image"
+                                        class="w-16 h-16 shrink-0 bg-white rounded-xl border border-stone-100 p-1 flex items-center justify-center shadow-sm">
+                                        <img :src="item.image"
+                                            class="max-w-full max-h-full object-contain mix-blend-multiply">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: MONEY -->
+                <div v-if="viewMode === 'money'" class="p-5 space-y-6 animate-fade-in">
+                    <div
+                        class="bg-ocean text-white rounded-[2.5rem] p-8 shadow-xl shadow-cyan-500/30 text-center relative overflow-hidden">
+                        <div
+                            class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+                        </div>
+                        <div class="absolute top-6 right-6 flex flex-col items-end">
+                            <label
+                                class="text-[10px] text-cyan-100 mb-1 font-bold uppercase tracking-wider">Rate</label>
+                            <input type="number" v-model="exchangeRate"
+                                class="w-16 bg-black/20 text-white text-right text-xs rounded-lg px-2 py-1 border-none outline-none font-mono font-bold backdrop-blur-sm">
+                        </div>
+
+                        <div class="relative z-10 mt-6">
+                            <div class="text-sm text-cyan-100 font-medium mb-1 uppercase tracking-widest">Total Expenses
+                            </div>
+                            <div class="text-6xl font-black font-mono tracking-tighter mb-4">${{ totalExpense }}</div>
+                            <div
+                                class="inline-block bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-white border border-white/20">
+                                ≈ TWD {{ Math.round(totalExpense * exchangeRate).toLocaleString() }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-stone-100">
+                        <h3 class="text-sm font-black text-stone-700 mb-4 flex items-center gap-2 px-1"><i
+                                class="ph-fill ph-plus-circle text-cyan-500 text-lg"></i> 新增消費</h3>
+                        <div class="flex gap-3 mb-3">
+                            <input v-model="newExpense.item" placeholder="項目 (如: Uber)"
+                                class="flex-1 bg-stone-50 border-none rounded-2xl text-sm px-5 py-4 outline-none focus:ring-2 focus:ring-cyan-500/30 transition font-bold text-stone-700 placeholder:font-normal">
+                            <div class="relative">
+                                <select v-model="newExpense.payer"
+                                    class="appearance-none bg-stone-50 border-none rounded-2xl text-sm pl-4 pr-8 py-4 outline-none font-bold text-stone-600 focus:ring-2 focus:ring-cyan-500/30 h-full">
+                                    <option>我</option>
+                                    <option>公費</option>
+                                </select>
+                                <i
+                                    class="ph-bold ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="relative flex-1">
+                                <span class="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 font-bold">$</span>
+                                <input type="number" v-model="newExpense.amount" placeholder="0.00"
+                                    class="w-full bg-stone-50 border-none rounded-2xl text-sm pl-9 pr-5 py-4 font-mono font-bold outline-none focus:ring-2 focus:ring-cyan-500/30 transition text-stone-800">
+                            </div>
+                            <button @click="addExpense"
+                                class="bg-cyan-500 text-white w-14 rounded-2xl hover:bg-cyan-600 active:scale-95 transition shadow-lg shadow-cyan-500/20 flex items-center justify-center">
+                                <i class="ph-bold ph-arrow-right text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div v-for="(exp, idx) in expenses" :key="idx"
+                            class="flex justify-between items-center bg-white p-4 rounded-3xl border border-stone-100 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-black border-2 border-white shadow-sm"
+                                    :class="exp.payer === '公費' ? 'bg-purple-100 text-purple-600' : 'bg-stone-100 text-stone-600'">
+                                    {{ exp.payer === '公費' ? '公' : '我' }}
+                                </div>
+                                <div class="font-bold text-stone-700 text-sm">{{ exp.item }}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono font-bold text-stone-800">${{ exp.amount }}</span>
+                                <button @click="removeExpense(idx)"
+                                    class="w-8 h-8 flex items-center justify-center text-stone-300 hover:text-rose-500 hover:bg-rose-50 rounded-full transition"><i
+                                        class="ph-bold ph-trash text-lg"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: DOCS -->
+                <div v-if="viewMode === 'docs'" class="p-5 space-y-6 animate-fade-in">
+                    <div
+                        class="bg-slate-800 text-white rounded-[2rem] p-8 shadow-xl shadow-slate-500/30 relative overflow-hidden">
+                        <i
+                            class="ph-duotone ph-identification-card text-indigo-400 absolute -right-8 -bottom-8 opacity-20 text-[180px]"></i>
+                        <h2 class="text-2xl font-black flex items-center gap-2 relative z-10">我的證件</h2>
+                        <p class="text-slate-400 text-xs mt-1 relative z-10 font-medium">資料僅暫存於此裝置</p>
+                    </div>
+
+                    <div v-for="(doc, docIdx) in documents" :key="docIdx"
+                        class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden relative group transition-all hover:shadow-md">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-slate-800"></div>
+                        <div
+                            class="bg-stone-50/50 px-6 py-4 border-b border-stone-100 flex justify-between items-center">
+                            <span class="font-black text-stone-700 text-sm">{{ doc.title }}</span>
+                            <button @click="removeDoc(docIdx)" class="text-stone-300 hover:text-rose-500 transition"><i
+                                    class="ph-bold ph-trash text-lg"></i></button>
+                        </div>
+                        <div class="p-6 space-y-5">
+                            <div v-for="(field, fIdx) in doc.fields" :key="fIdx">
+                                <label
+                                    class="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1.5">{{
+                                    field.label }}</label>
+                                <div class="relative">
+                                    <div
+                                        class="w-full text-sm border-b-2 py-1 font-mono font-bold bg-transparent text-stone-800 border-stone-100 group-hover:border-slate-200 transition-colors">
+                                        {{ (!field.isSecret || field.revealed) ? field.value : '•••• •••• ••••' }}
+                                    </div>
+                                    <button v-if="field.isSecret" @click="field.revealed = !field.revealed"
+                                        class="absolute right-0 top-0 text-stone-400 hover:text-slate-800 p-1 transition">
+                                        <i :class="field.revealed ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: MAP -->
+                <div v-if="viewMode === 'map'" class="h-full w-full bg-slate-100">
+                    <iframe src="https://www.google.com/maps/d/embed?mid=1t8mZMS8VSCAJKqJiClO2UfADz9RPchs" width="100%"
+                        height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav
+                class="shrink-0 glass-nav-island m-4 mb-6 px-4 py-2 flex justify-between items-center z-50 rounded-2xl h-[70px]">
+                <button @click="viewMode = 'plan'"
+                    :class="viewMode === 'plan' ? 'text-rose-500 -translate-y-1' : 'text-stone-400 hover:text-stone-600'"
+                    class="flex flex-col items-center gap-1 p-2 transition-all duration-300 w-16 group">
+                    <div class="p-2 rounded-xl transition-all duration-300"
+                        :class="viewMode === 'plan' ? 'bg-rose-50' : 'group-hover:bg-stone-50'">
+                        <i :class="viewMode === 'plan' ? 'ph-fill ph-calendar-check' : 'ph-bold ph-calendar-check'"
+                            class="text-2xl transition-transform" :class="{'scale-110': viewMode === 'plan'}"></i>
+                    </div>
+                    <span class="text-[10px] font-bold transition-opacity duration-300"
+                        :class="viewMode === 'plan' ? 'opacity-100' : 'opacity-0 h-0 hidden'">行程</span>
+                </button>
+
+                <button @click="viewMode = 'transport'"
+                    :class="viewMode === 'transport' ? 'text-rose-500 -translate-y-1' : 'text-stone-400 hover:text-stone-600'"
+                    class="flex flex-col items-center gap-1 p-2 transition-all duration-300 w-16 group">
+                    <div class="p-2 rounded-xl transition-all duration-300"
+                        :class="viewMode === 'transport' ? 'bg-rose-50' : 'group-hover:bg-stone-50'">
+                        <i :class="viewMode === 'transport' ? 'ph-fill ph-car' : 'ph-bold ph-car'"
+                            class="text-2xl transition-transform" :class="{'scale-110': viewMode === 'transport'}"></i>
+                    </div>
+                    <span class="text-[10px] font-bold transition-opacity duration-300"
+                        :class="viewMode === 'transport' ? 'opacity-100' : 'opacity-0 h-0 hidden'">交通</span>
+                </button>
+
+                <div class="relative -top-6">
+                    <button @click="viewMode = 'guide'"
+                        class="bg-gradient-to-tr from-rose-500 to-orange-400 text-white w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-500/40 hover:scale-105 active:scale-95 transition-all duration-300 border-4 border-[#fafaf9] z-20">
+                        <i class="ph-fill ph-book-open-text text-2xl"></i>
+                    </button>
+                </div>
+
+                <button @click="viewMode = 'shop'"
+                    :class="viewMode === 'shop' ? 'text-rose-500 -translate-y-1' : 'text-stone-400 hover:text-stone-600'"
+                    class="flex flex-col items-center gap-1 p-2 transition-all duration-300 w-16 group">
+                    <div class="p-2 rounded-xl transition-all duration-300"
+                        :class="viewMode === 'shop' ? 'bg-rose-50' : 'group-hover:bg-stone-50'">
+                        <i :class="viewMode === 'shop' ? 'ph-fill ph-shopping-bag' : 'ph-bold ph-shopping-bag'"
+                            class="text-2xl transition-transform" :class="{'scale-110': viewMode === 'shop'}"></i>
+                    </div>
+                    <span class="text-[10px] font-bold transition-opacity duration-300"
+                        :class="viewMode === 'shop' ? 'opacity-100' : 'opacity-0 h-0 hidden'">購物</span>
+                </button>
+
+                <button @click="viewMode = 'docs'"
+                    :class="viewMode === 'docs' ? 'text-rose-500 -translate-y-1' : 'text-stone-400 hover:text-stone-600'"
+                    class="flex flex-col items-center gap-1 p-2 transition-all duration-300 w-16 group">
+                    <div class="p-2 rounded-xl transition-all duration-300"
+                        :class="viewMode === 'docs' ? 'bg-rose-50' : 'group-hover:bg-stone-50'">
+                        <i :class="viewMode === 'docs' ? 'ph-fill ph-identification-card' : 'ph-bold ph-identification-card'"
+                            class="text-2xl transition-transform" :class="{'scale-110': viewMode === 'docs'}"></i>
+                    </div>
+                    <span class="text-[10px] font-bold transition-opacity duration-300"
+                        :class="viewMode === 'docs' ? 'opacity-100' : 'opacity-0 h-0 hidden'">證件</span>
+                </button>
+            </nav>
+        </template>
     </div>
 
-    <script type="module">
-        import { createApp, ref, computed, watch, onMounted, nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    <script>
+        const { createApp, ref, computed, watch, onMounted, nextTick } = Vue;
 
         createApp({
             setup() {
                 const viewMode = ref('plan');
-                const guideTab = ref('decks'); // NEW: Guide tab control
+                const password = ref('');
+                const isAuthenticated = ref(false);
+                const passError = ref(false);
+                const guideTab = ref('action');
                 const currentDayIdx = ref(0);
-                const weather = ref({ temp: null, code: 0 });
-                const mapMarkersCount = ref(0);
+                const weather = ref(null);
+                const exchangeRate = ref(32.5);
+                const expenses = ref([]);
+                const newExpense = ref({ item: '', amount: '', payer: '我' });
+                const mainContainer = ref(null);
 
-                // --- KML 匯入地點資料 ---
-                const kmlLocations = [
-                    { name: '洛杉磯機場智選假日酒店', lat: 33.9591689, lng: -118.3850236 },
-                    { name: '洛杉磯國際機場', lat: 33.942153, lng: -118.4036052 },
-                    { name: 'LA 港口 (Cruise Center)', lat: 33.7475041, lng: -118.2772079 },
-                    { name: '卡波聖盧卡斯 (Cabo)', lat: 22.8788929, lng: -109.9074626 },
-                    { name: '馬薩特蘭 (Mazatlan)', lat: 23.1929344, lng: -106.4174812 },
-                    { name: '巴亞爾塔港 (Puerto Vallarta)', lat: 20.6533354, lng: -105.2407708 },
-                    { name: '聯合車站 (Union Station)', lat: 34.0562196, lng: -118.2365021 },
-                    { name: '格里斐斯天文台', lat: 34.1184341, lng: -118.3003935 },
-                    { name: '蓋蒂中心', lat: 34.0773438, lng: -118.4732648 },
-                    { name: 'Grand Central Market', lat: 34.050872, lng: -118.2490552 },
-                    { name: '格里斐斯公園', lat: 34.1365544, lng: -118.2942 },
-                    { name: '聖莫尼卡碼頭', lat: 34.0082821, lng: -118.4987585 },
-                    { name: '布洛德博物館 (The Broad)', lat: 34.0545021, lng: -118.2501802 },
-                    { name: '華特·迪士尼音樂廳', lat: 34.0553454, lng: -118.249845 },
-                    { name: 'The Last Bookstore', lat: 34.0476964, lng: -118.2498964 },
-                    { name: 'Citadel Outlets', lat: 34.0073187, lng: -118.1529856 },
-                    { name: 'Shake Shack Downtown LA', lat: 34.0444873, lng: -118.2561395 },
-                    { name: 'Lake Hollywood Park', lat: 34.1269448, lng: -118.3261053 },
-                    { name: 'LA Airbnb 住宿', lat: 34.0379675, lng: -118.141664 },
-                    { name: '迪士尼加州冒險樂園', lat: 33.8062236, lng: -117.9199281 }
-                ];
-
-                // --- 2026 行程資料初始化 ---
-                const initData = [
-                    { date: '02/11 (三)', shortDate: '2/11', title: '出發日 / 抵達 LA', flight: { startTime: '23:40', startAirport: 'TPE', number: 'JX2', endTime: '19:00', endAirport: 'LAX', arrivalOffset: 0 }, items: [{ time: '18:00', type: 'transport', activity: '前往桃園機場', location: 'TPE Airport', note: '記得拿WiFi機' }, { time: '19:00', type: 'flight', activity: '抵達 LAX', location: 'LAX Airport', note: '入境檢查' }, { time: '20:30', type: 'hotel', activity: 'Check-in 飯店', location: 'Holiday Inn Express Los Angeles LAX Airport', note: '至 Upper Level (出境層) 紅色 \'Hotel Shuttles\' 標示搭乘 (每30分一班)' }, { time: '21:00', type: 'shop', activity: '超市採買: Trader Joe\'s & Target', location: '8611 S Sepulveda Blvd', note: '就在飯店附近，買水/零食/早餐' }] },
+                // --- DATA ---
+                const days = ref([
+                    { date: '2/11 (三)', shortDate: '2/11', title: '抵達 LA & 入住飯店', flight: { startTime: '23:40', startAirport: 'TPE', number: 'JX2', endTime: '19:00', endAirport: 'LAX' }, items: [{ time: '19:00', type: 'flight', activity: '抵達 LAX', location: 'Tom Bradley International Terminal, Los Angeles, CA', note: '入境檢查' }, { time: '20:30', type: 'hotel', activity: 'Check-in', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '搭乘紅色標誌接駁車' }, { time: '21:30', type: 'shop', activity: '買水', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '簡單補給' }] },
+                    { date: '2/12 (四)', shortDate: '2/12', title: 'LA 市區步行', items: [{ time: '09:30', type: 'shop', activity: "Trader Joe's", location: 'Trader Joe\'s, 8611 S Sepulveda Blvd, Los Angeles, CA 90045', note: '買伴手禮' }, { time: '12:00', type: 'hotel', activity: 'Check-out', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '退房，帶著行李' }, { time: '12:00', isStrategy: true, activity: '💡 Plan B: 直送行李 (推薦)', note: '若預算許可 ($60-80)，推薦叫 UberXL 直奔 Monterey Park 放行李。\n1. 12:00 叫車前往 Monterey Park (約50分)\n2. 13:15 放行李 (需先確認房東)\n3. 13:30 搭 Uber 進市區 (約20分) 接續行程' }, { time: '12:30', type: 'transport', activity: 'Plan A: FlyAway', location: 'LAX Tom Bradley International Terminal', note: '省錢方案：Lower Level (入境層) 綠色柱子搭車 -> Union Station ($9.75)' }, { time: '14:00', type: 'spot', activity: '市區步行開始', location: 'Los Angeles Union Station, 800 N Alameda St, Los Angeles, CA 90012', note: '最後書店 -> 中央市場 -> 天使鐵路 -> The Broad', link: 'https://www.google.com/maps/dir/?api=1&origin=Los+Angeles+Union+Station&destination=The+Broad&waypoints=The+Last+Bookstore|Grand+Central+Market|Angels+Flight+Railway|Walt+Disney+Concert+Hall&travelmode=walking' }, { time: '14:10', type: 'spot', activity: '最後書店 The Last Bookstore', location: 'The Last Bookstore, 453 S Spring St, Los Angeles, CA 90013', note: '必拍書牆隧道' }, { time: '14:50', type: 'food', activity: 'Grand Central Market 午餐', location: 'Grand Central Market, 317 S Broadway, Los Angeles, CA 90013', note: '推薦 Eggslut 或 Tacos Tumbras' }, { time: '15:30', type: 'spot', activity: '天使鐵路 (Angels Flight)', location: 'Angels Flight Railway, 351 S Hill St, Los Angeles, CA 90013', note: '搭纜車上山' }, { time: '15:45', type: 'spot', activity: '迪士尼音樂廳 (外觀)', location: 'Walt Disney Concert Hall, 111 S Grand Ave, Los Angeles, CA 90012', note: '拍照' }, { time: '16:00', type: 'spot', activity: 'The Broad (預約)', location: 'The Broad, 221 S Grand Ave, Los Angeles, CA 90012', note: '⚠️ 預約 16:00 準時入場 / 草間彌生' }, { time: '17:30', type: 'food', activity: 'Blue Bottle Coffee', location: 'Blue Bottle Coffee, 300 S Broadway, Los Angeles, CA 90013', note: '逛完如下山可去' }, { time: '18:30', type: 'transport', activity: '回 Monterey Park', location: 'Monterey Park, CA', note: '' }] },
                     {
-                        date: '02/12 (四)', shortDate: '2/12', title: 'LA 市區 / LADT 探索', items: [
-                            { time: '09:00', type: 'hotel', activity: 'Check-out 飯店', location: 'Holiday Inn Express LAX', note: '帶好行李' },
-                            { time: '09:30', type: 'transport', activity: '搭乘 LAX FlyAway 巴士', location: 'LAX FlyAway Bus Stop', note: '至 Lower Level (入境層) 綠色柱子搭車', link: 'https://www.flylax.com/flyaway-bus' },
-                            { time: '10:30', type: 'spot', activity: '抵達聯合車站 & 寄放行李', location: 'Los Angeles Union Station', note: '搜尋 Bounce/Radical Storage', link: 'https://bounce.com/luggage-storage/los-angeles/union-station-la' },
-                            { time: '11:00', type: 'spot', activity: '天使鐵路 (Angels Flight)', location: 'Angels Flight Railway', note: 'La La Land 場景 / 單程$1' },
-                            { time: '11:30', type: 'food', activity: 'Grand Central Market 午餐', location: 'Grand Central Market', note: '必吃: Eggslut 漢堡' },
-                            { time: '12:30', type: 'food', activity: 'Blue Bottle Coffee', location: 'Blue Bottle Coffee Bradbury', note: '布雷德伯里大樓店 / 拿鐵' },
-                            { time: '13:00', type: 'spot', activity: 'The Broad 博物館', location: 'The Broad', note: '當代藝術 / 草間彌生 (需預約)' },
-                            { time: '14:30', type: 'spot', activity: '迪士尼音樂廳', location: 'Walt Disney Concert Hall', note: '外觀拍照 (金屬建築)' },
-                            { time: '15:00', type: 'spot', activity: '最後書店 The Last Bookstore', location: 'The Last Bookstore', note: '書本隧道 / IG熱點' },
-                            { time: '16:00', type: 'transport', activity: '回聯合車站取行李', location: 'Union Station', note: '' },
-                            { time: '16:30', type: 'transport', activity: '前往 Airbnb', location: 'LA Airbnb 住宿', note: '叫 Uber/Lyft', link: 'https://www.airbnb.com.tw/rooms/883532373041404930' },
-                            { time: '17:30', type: 'hotel', activity: 'Airbnb Check-in', location: 'LA Airbnb 住宿', note: '住到 2/15 (Montebello附近)' }
+                        date: '2/13 (五)', shortDate: '2/13', title: 'Citadel Outlets 全日購物', items: [
+                            { time: '10:00', type: 'transport', activity: '前往 Outlet', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: '睡飽出發，搭 Uber 約 20 分鐘' },
+                            { time: '10:30', isStrategy: true, activity: '🛍️ Citadel Outlet 戰略指南', note: '【建議動線】Lululemon ➔ Coach ➔ Polo/Tommy\n\n【領取折扣】先去 Customer Service 憑護照領 Savings Passport (滿額打折)\n\n1. Lululemon (搶貨): 台灣S拿2-4/M拿6。折扣區長褲約$59-89。\n2. Coach (掃包): 留意「額外20% Off」看板。皮帶有分尺寸。\n3. Polo/Tommy (補衣): Polo選Slim Fit，童裝XL/TG大人可穿(省30%)。Tommy版型偏大。' },
+                            { time: '10:30', type: 'shop', activity: 'Outlet 購物馬拉松 (上半場)', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: 'LA 唯一城堡 Outlet / 記得先去 Guest Services 領折價券' },
+                            { time: '13:00', type: 'food', activity: '午餐', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: 'Ruby\'s Diner 或 Panda Express (補充體力)' },
+                            { time: '14:30', type: 'shop', activity: 'Outlet 購物馬拉松 (下半場)', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: '把剩下的清單買齊 / Disney Store 在這裡也有' },
+                            { time: '18:30', type: 'transport', activity: '回 Airbnb 整理戰利品', location: 'Monterey Park, CA', note: '晚餐可買回 Airbnb 吃，早點休息，明天迪士尼需要大量體力！' }
                         ]
                     },
-                    { date: '02/13 (五)', shortDate: '2/13', title: 'Santa Monica & Outlet', items: [{ time: '11:00', type: 'spot', activity: 'Santa Monica Pier', location: 'Santa Monica Pier', note: '海灘、碼頭' }, { time: '15:00', type: 'shop', activity: 'Citadel Outlets', location: 'Citadel Outlets', note: 'Outlet 購物' }, { time: '20:00', type: 'hotel', activity: '回 Airbnb', location: 'LA Airbnb 住宿', note: '' }] },
-                    {
-                        date: '02/14 (六)', shortDate: '2/14', title: 'Disneyland 迪士尼 (LL攻略)', items: [
-                            { time: '07:30', type: 'transport', activity: '抵達園區 (Rope Drop)', location: 'Disneyland Park', note: '提早過安檢 / 記得租行動電源' },
-                            { time: '08:00', type: 'spot', activity: '⚡️ 星際大戰：反抗軍起義', location: 'Star Wars: Rise of the Resistance', note: '必玩第一名 / 建議買單次LL' },
-                            { time: '09:00', type: 'spot', activity: '⚡️ 印第安納瓊斯冒險', location: 'Indiana Jones Adventure', note: 'LL 設施 / 刺激吉普車' },
-                            { time: '10:30', type: 'spot', activity: '⚡️ 米奇米妮飛速鐵路', location: 'Mickey & Minnie\'s Runaway Railway', note: 'LL 設施 / Toontown / 適合全家' },
-                            { time: '12:00', type: 'food', activity: '午餐: Docking Bay 7', location: 'Docking Bay 7 Food and Cargo', note: '星戰主題餐廳 / 炸雞好喫' },
-                            { time: '13:00', type: 'spot', activity: '📸 拍照點: 千年鷹號', location: 'Millennium Falcon: Smugglers Run', note: '星戰區地標 / 旁邊喝藍牛奶' },
-                            { time: '13:30', type: 'spot', activity: '⚡️ 千年鷹號：走私者逃亡', location: 'Millennium Falcon: Smugglers Run', note: 'LL 設施 / 模擬飛行' },
-                            { time: '15:00', type: 'spot', activity: '遊行: Magic Happens', location: 'Main Street, U.S.A.', note: '15:30 或 18:00 (請確認當日APP) / 迪士尼必看遊行' },
-                            { time: '16:00', type: 'shop', activity: '🛍️ 必買: 星巴克 & 髮箍', location: 'Market House', note: '迪士尼限定杯 / Emporium 買耳朵髮箍' },
-                            { time: '17:00', type: 'spot', activity: '⚡️ 太空山 Space Mountain', location: 'Space Mountain Disneyland', note: 'LL 設施 / 室內雲霄飛車' },
-                            { time: '18:30', type: 'spot', activity: '📸 拍照點: 睡美人城堡', location: 'Sleeping Beauty Castle', note: '黃昏/點燈時刻最美 / Partners 雕像' },
-                            { time: '19:30', type: 'spot', activity: '⚡️ 馬特洪峰雪橇', location: 'Matterhorn Bobsleds', note: 'LL 設施 / 經典雪怪飛車' },
-                            { time: '21:30', type: 'spot', activity: '🎇 煙火秀 / 光影秀', location: 'Main Street, U.S.A.', note: '城堡前佔位 / 結束後人潮多' },
-                            { time: '22:30', type: 'hotel', activity: '回 Airbnb', location: 'LA Airbnb 住宿', note: '最後一晚' }
-                        ]
-                    },
-                    { date: '02/15 (日)', shortDate: '2/15', title: '登船日 (NCL)', items: [{ time: '10:00', type: 'transport', activity: '退房前往港口', location: 'LA Airbnb 住宿', note: 'Uber' }, { time: '11:00', type: 'transport', activity: '登船手續 (11:00-11:30)', location: 'San Pedro World Cruise Center', note: '準時抵達!' }, { time: '16:00', type: 'spot', activity: '郵輪離港', location: '', note: 'NCL Joy/Bliss' }] },
-                    { date: '02/16 (一)', shortDate: '2/16', title: '海上巡遊 At Sea', items: [{ time: '', type: 'spot', activity: '享受船上設施', location: '', note: '泳池、秀場' }] },
-                    { date: '02/17 (二)', shortDate: '2/17', title: 'Cabo San Lucas', items: [{ time: '11:00', type: 'spot', activity: '抵達 Cabo', location: 'Cabo San Lucas', note: '墨西哥' }, { time: '19:00', type: 'spot', activity: '離港', location: '', note: '' }] },
-                    { date: '02/18 (三)', shortDate: '2/18', title: 'Mazatlán', items: [{ time: '08:00', type: 'spot', activity: '抵達 Mazatlán', location: 'Mazatlán', note: '墨西哥' }, { time: '18:00', type: 'spot', activity: '離港', location: '', note: '' }] },
-                    { date: '02/19 (四)', shortDate: '2/19', title: 'Puerto Vallarta', items: [{ time: '08:00', type: 'spot', activity: '抵達 Puerto Vallarta', location: 'Puerto Vallarta', note: '墨西哥' }, { time: '18:00', type: 'spot', activity: '離港', location: '', note: '' }] },
-                    { date: '02/20 (五)', shortDate: '2/20', title: '海上巡遊 At Sea', items: [{ time: '', type: 'spot', activity: '海上放鬆', location: '', note: '' }] },
-                    { date: '02/21 (六)', shortDate: '2/21', title: '海上巡遊 At Sea', items: [{ time: '', type: 'spot', activity: '整理行李', location: '', note: '' }] },
-                    { date: '02/22 (日)', shortDate: '2/22', title: '下船 & 回程', flight: { startTime: '22:50', startAirport: 'LAX', number: 'JX1', endTime: '05:30', endAirport: 'TPE', arrivalOffset: 1 }, items: [{ time: '07:00', type: 'transport', activity: '下船', location: 'Los Angeles', note: '' }, { time: '08:30', type: 'transport', activity: '前往 Outlet (寄放行李)', location: 'Citadel Outlets', note: '車程約30分' }, { time: '10:00', type: 'shop', activity: 'Citadel Outlets 逛街', location: 'Citadel Outlets', note: 'Coach/Nike/MK' }, { time: '13:00', type: 'food', activity: '午餐', location: 'Citadel Outlets', note: '美食街' }, { time: '16:00', type: 'food', activity: 'In-N-Out Burger', location: 'In-N-Out Burger Sepulveda', note: '機場旁必吃 / 看飛機' }, { time: '19:00', type: 'transport', activity: '前往機場 (LAX)', location: 'LAX Airport', note: '預留3小時安檢' }] },
-                    { date: '02/23 (一)', shortDate: '2/23', title: '飛機上', items: [{ time: '', type: 'transport', activity: '跨越國際換日線', location: '', note: '' }] },
-                    { date: '02/24 (二)', shortDate: '2/24', title: '抵達台灣', items: [{ time: '05:30', type: 'flight', activity: '抵達桃園機場', location: 'TPE Airport', note: '溫暖的家' }] }
-                ];
-
-                // --- NCL 樓層資料 (New Data) ---
-                const shipDecks = ref([
-                    {
-                        level: '16', name: 'Deck 16 頂層甲板', open: true,
-                        forward: [{ name: 'Pool Deck (泳池)', free: true, note: '主泳池/按摩池' }, { name: 'Kids Aqua Park', free: true, note: '兒童戲水區' }],
-                        mid: [{ name: 'Surf Bar', free: false }],
-                        aft: [{ name: 'Garden Café (自助餐)', free: true, note: '必吃: 現切牛排/現做Omelet' }, { name: 'Pulse Fitness Center (健身房)', free: true, note: '海景跑步機' }, { name: 'Spa 入口', free: false }]
-                    },
-                    {
-                        level: '15', name: 'Deck 15 景觀層', open: false,
-                        forward: [{ name: 'Observation Lounge (觀景酒廊)', free: true, note: '最佳海景發呆區 (有輕食)' }],
-                        mid: [],
-                        aft: []
-                    },
-                    {
-                        level: '08', name: 'Deck 8 海濱大道 (Waterfront)', open: false,
-                        forward: [{ name: 'District Brew House', free: false }, { name: 'Food Republic', free: false, note: '推: 韓式炸雞/壽司卷' }],
-                        mid: [{ name: 'Sugarcane Mojito Bar', free: false }, { name: 'Ocean Blue (海鮮)', free: false }],
-                        aft: [{ name: 'Cagney\'s Steakhouse (牛排)', free: false, note: '推: 肋眼牛排/松露薯條' }, { name: 'Los Lobos (墨西哥)', free: false, note: '推: 桌邊現做酪梨醬' }, { name: 'The Cavern Club (Beatles)', free: true, note: 'Beatles 表演' }]
-                    },
-                    {
-                        level: '07', name: 'Deck 7 娛樂中心', open: false,
-                        forward: [{ name: 'Bliss Theater (劇院)', free: true }],
-                        mid: [{ name: 'Casino (賭場)', free: false }, { name: 'The Local (24h餐廳)', free: true, note: '推: 雞翅/Prime Rib' }, { name: 'Skyline Bar', free: false }],
-                        aft: [{ name: 'Manhattan Room (主餐廳)', free: true, note: '有現場音樂/推: 紐約客牛排' }]
-                    },
-                    {
-                        level: '06', name: 'Deck 6 大廳層', open: false,
-                        forward: [{ name: 'Q Texas Smokehouse', free: false, note: '推: 牛胸肉 (Brisket)' }],
-                        mid: [{ name: 'Atrium (大廳)', free: true }, { name: 'Starbucks', free: false }, { name: 'Guest Services', free: true }],
-                        aft: [{ name: 'Taste (主餐廳)', free: true, note: '每日變換主廚特餐' }, { name: 'Savor (主餐廳)', free: true, note: '每日變換主廚特餐' }, { name: 'Mixx Bar', free: false }]
-                    }
+                    { date: '2/14 (六)', shortDate: '2/14', title: 'Disneyland 迪士尼 (LL攻略)', heroImage: '圖片/迪士尼圖片.png', items: [{ time: '07:50', isStrategy: true, activity: '📱 LL 搶票策略', note: '08:00 搶 Space Mountain (優先)\n08:05 買 Rise of the Resistance ILL\n10:00 搶 Tiana\'s Bayou Adventure\n12:00 搶 Indiana Jones Adventure\n14:00 搶 Mickey & Minnie\'s Runaway Railway' }, { time: '08:00', type: 'spot', activity: 'Star Tours', location: 'Star Tours – The Adventures Continue, Disneyland Park, Anaheim, CA', note: '第一名必玩 / 排隊Standby / 📸 AT-AT' }, { time: '08:45', type: 'spot', activity: 'Space Mountain 太空山', location: 'Space Mountain, Disneyland Park, Anaheim, CA', note: '第二名必玩 / 使用LL / 📸 白色建築' }, { time: '09:30', type: 'spot', activity: 'Buzz Lightyear Astro Blasters', location: 'Buzz Lightyear Astro Blasters, Disneyland Park, Anaheim, CA', note: '兩人一組PK / 📸 巴斯機器人' }, { time: '10:00', type: 'spot', activity: 'Autopia 懷舊賽車', location: 'Autopia, Disneyland Park, Anaheim, CA', note: '自己踩油門 / 📸 賽車頒獎台' }, { time: '10:45', type: 'spot', activity: 'Star Wars: Rise of the Resistance', location: 'Star Wars: Rise of the Resistance, Disneyland Park, Anaheim, CA', note: '第一名必玩 / ILL付費 / 📸 風暴兵' }, { time: '11:45', type: 'spot', activity: 'Matterhorn Bobsleds', location: 'Matterhorn Bobsleds, Disneyland Park, Anaheim, CA', note: '第三名必玩 / 雪山飛車 / 📸 雪山背景' }, { time: '12:45', type: 'spot', activity: 'Mickey & Minnie\'s Runaway Railway', location: 'Mickey & Minnie\'s Runaway Railway, Disneyland Park, Anaheim, CA', note: '第三名必玩 / 卡通城 / 📸 戲院門口' }, { time: '13:30', type: 'spot', activity: 'Fantasy Faire', location: 'Fantasy Faire, Disneyland Park, Anaheim, CA', note: '與公主見面 / 📸 皇家劇院' }, { time: '13:45', type: 'spot', activity: '遊行: Celebrate Happy Cavalcade', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '迷你遊行 / 📸 大街路旁 (時間需確認APP)' }, { time: '14:30', type: 'spot', activity: 'Tiana\'s Bayou Adventure', location: 'Tiana\'s Bayou Adventure, Disneyland Park, Anaheim, CA', note: '第二名必玩 / 坐船衝瀑布 / 📸 衝下瞬間' }, { time: '15:30', type: 'spot', activity: 'Winnie the Pooh', location: 'The Many Adventures of Winnie the Pooh, Disneyland Park, Anaheim, CA', note: '溫馨療癒 / 📸 森林背景' }, { time: '16:00', type: 'spot', activity: 'Pirates of the Caribbean', location: 'Pirates of the Caribbean, Disneyland Park, Anaheim, CA', note: '經典海盜船 / 📸 紐奧良建築' }, { time: '16:45', type: 'spot', activity: 'Indiana Jones Adventure', location: 'Indiana Jones Adventure, Disneyland Park, Anaheim, CA', note: '第四名必玩 / 刺激吉普車 / 📸 神廟入口' }, { time: '17:30', type: 'spot', activity: 'Enchanted Tiki Room', location: 'Walt Disney\'s Enchanted Tiki Room, Disneyland Park, Anaheim, CA', note: '休息吹冷氣 / 📸 門口Dole Whip' }, { time: '18:00', type: 'spot', activity: 'Walt Disney - A Magical Life', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '華特機器人講故事 / 📸 大廳文物' }, { time: '21:00', type: 'spot', activity: 'Fantasmic! 水幕秀', location: 'Rivers of America, Disneyland Park, Anaheim, CA', note: '必看大秀 / 20:15卡位 / 📸 蒸汽船' }, { time: '21:30', type: 'spot', activity: '煙火秀', location: 'Sleeping Beauty Castle, Disneyland Park, Anaheim, CA', note: '城堡煙火 / 📸 城堡正前方' }, { time: '22:30', type: 'hotel', activity: '回 Airbnb', location: 'Monterey Park, CA', note: '最後一晚' }] },
+                    { date: '2/15 (日)', shortDate: '2/15', title: '登船日 (NCL) - 搶頭香', items: [{ time: '09:00', type: 'transport', activity: '退房前往港口', location: 'Monterey Park, CA', note: '提早出發！目標 10:00 抵達' }, { time: '10:00', type: 'spot', activity: '抵達港口 & 托運行李', location: '100 Swinford St, San Pedro, CA 90731', note: 'World Cruise Center / Porters 剛好開始收件。絕對頭香，目標拿到 Boarding Group 1！' }, { time: '11:00', type: 'transport', activity: '登船手續 (Check-in)', location: 'World Cruise Center, 100 Swinford St, San Pedro, CA 90731', note: '等待叫號，準備登船午餐' }, { time: '16:00', type: 'boat', activity: '郵輪離港', location: 'World Cruise Center, 100 Swinford St, San Pedro, CA 90731', note: '開始海上假期' }] },
+                    { date: '2/16 (一)', shortDate: '2/16', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '泳池、賽車、雷射槍' }, { time: '21:30', type: 'spot', activity: '秀: ICONS', location: 'Bliss Theater, NCL Bliss', note: '已預約 (Reservation 2 pax)' }] },
+                    { date: '2/17 (二)', shortDate: '2/17', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '悠閒的一天，準備明天抵達墨西哥' }] },
+                    { date: '2/18 (三)', shortDate: '2/18', title: 'Puerto Vallarta (Dock)', items: [{ time: '08:00', type: 'food', activity: 'Tacos de Canasta Jasmin', location: 'Plaza Marina, Puerto Vallarta, Jalisco, Mexico', note: '早餐推薦：道地「籃子塔可」(馬鈴薯/豆泥/燉肉) / 位於 Marina 地區' }, { time: '09:30', type: 'shop', activity: 'Walmart & Galerias Mall', location: 'Galerias Vallarta Shopping Mall, Puerto Vallarta, Jalisco, Mexico', note: '必買：Molina 香草精、100% Agave 龍舌蘭、墨西哥咖啡豆 (比觀光區便宜)' }, { time: '12:30', type: 'food', activity: 'Campomar 海鮮餐廳', location: 'Restaurante Campomar, Puerto Vallarta, Jalisco, Mexico', note: '當地高評價海鮮 / 適合享用正餐' }, { time: '14:30', type: 'transport', activity: '前往市中心 (搭 Uber)', location: 'Malecon Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '約 15-20 分鐘車程' }, { time: '15:00', type: 'spot', activity: '海濱大道 (The Malecón)', location: 'Malecon Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '散步地標：海馬雕像、瓜達盧佩聖母教堂' }, { time: '17:00', type: 'transport', activity: '準備回船', location: 'Terminal Marítima de Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '建議提早叫車，預留塞車時間' }, { time: '18:00', type: 'boat', activity: '郵輪離港', location: 'Terminal Marítima de Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '前往 Mazatlán' }] },
+                    { date: '2/19 (四)', shortDate: '2/19', title: 'Mazatlán (Dock) - 舊城探索', items: [{ time: '09:00', isStrategy: true, activity: '🛺 交通體驗：Pulmonia (肺車)', note: '下船後尋找像高爾夫球車的敞篷計程車，吹海風直達市場！\n💡 飲食關鍵字：Sin mayonesa (不要美乃滋)、Poco limón (少檸檬)、Marlin (馬林魚)' }, { time: '09:30', type: 'spot', activity: '皮諾蘇亞雷斯市場 (Mercado Pino Suarez)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '艾菲爾鐵塔風格市場 / 必看：蝦乾 (Camaron Seco)、乾辣椒' }, { time: '10:00', type: 'food', activity: '早午餐：市場 2F 小吃攤 (Fondas)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '必吃：Ceviche de Sierra (檸檬醃魚) - 天然熟成鮮味，配玉米餅' }, { time: '11:00', type: 'spot', activity: '馬查多廣場 & 舊城散步', location: 'Plazuela Machado, Mazatlan, Sinaloa, Mexico', note: '觀察陽台垂吊植物 & 盛開九重葛，超好拍！' }, { time: '12:00', type: 'food', activity: '午餐：Mariscos El Toro', location: 'Mariscos El Toro, Mazatlan, Sinaloa, Mexico', note: '必吃：Tacos de Marlin (煙燻馬林魚塔可) - 吃起來像火腿，搭配起司' }, { time: '13:30', type: 'food', activity: '甜點：Raspados El Manantial', location: 'Raspados El Manantial, Mazatlan, Sinaloa, Mexico', note: '百年古早味燉李子冰 (Raspados de Ciruela) - 天然水果熬煮' }, { time: '14:15', type: 'spot', activity: '懸崖跳水 (El Clavadista)', location: 'El Clavadista, Mazatlan, Sinaloa, Mexico', note: '驚險表演，若覺得精彩可給小費' }, { time: '15:00', type: 'transport', activity: '海濱大道返程 (The Malecón)', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '搭 Pulmonia 沿海邊開回港口，左邊舊城右邊海景' }, { time: '18:00', type: 'boat', activity: '郵輪離港', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '前往 Cabo' }] },
+                    { date: '2/20 (五)', shortDate: '2/20', title: 'Cabo San Lucas (Tender)', items: [{ time: '06:30', type: 'spot', activity: '抵達 Cabo', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '墨西哥 / 需搭接駁船 (Tender) / 06:30 抵達' }, { time: '08:30', type: 'spot', activity: '🐋 Whale Watch Cabo (賞鯨)', location: 'Marina Cabo San Lucas, Cabo San Lucas, Baja California Sur, Mexico', note: '已預約 08:30 / 2月是最佳賞鯨季節 / 請提早前往碼頭集合' }, { time: '14:00', type: 'boat', activity: '離港', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '14:00 離港，末班接駁船通常較早，請注意時間！' }] },
+                    { date: '2/21 (六)', shortDate: '2/21', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '整理行李', location: 'NCL Bliss', note: '準備下船手續' }] },
+                    { date: '2/22 (日)', shortDate: '2/22', title: '下船 & 回程', flight: { startTime: '22:50', startAirport: 'LAX', number: 'JX1', endTime: '05:30', endAirport: 'TPE', arrivalOffset: 1 }, items: [{ time: '07:00', type: 'transport', activity: '下船', location: '100 Swinford St, San Pedro, CA 90731', note: 'World Cruise Center / 辦理入境' }, { time: '10:00', type: 'shop', activity: 'Citadel Outlets', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: '補貨 (若需要)' }, { time: '19:00', type: 'transport', activity: '前往機場', location: 'Tom Bradley International Terminal, Los Angeles, CA', note: '預備搭機' }] },
+                    { date: '2/23 (一)', shortDate: '2/23', title: '飛機上', items: [{ time: '', type: 'transport', activity: '跨越國際換日線', location: 'Pacific Ocean', note: '' }] },
+                    { date: '2/24 (二)', shortDate: '2/24', title: '抵達台灣', items: [{ time: '05:30', type: 'flight', activity: '抵達桃園機場', location: 'Taoyuan International Airport Terminal 2', note: '溫暖的家' }] }
                 ]);
 
-                // --- 藥妝與待辦清單資料 ---
+                const transportPlan = ref([
+                    { date: '2/11', route: '機場 → 飯店', time: '20:30', type: 'Hotel Shuttle', icon: '🚌', cost: '免費', dist: '15分 (3km)', note: '無需代碼，行李小費約 $2/件' },
+                    { date: '2/12', route: '飯店 → 房源', time: '11:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '45分 (38km)', strategy: '使用 Uber: cn0sq ($5 OFF) 或 FTUBERUS2026 (30% OFF)' },
+                    { date: '2/12', route: '房源 → 市區', time: '13:15', type: 'Waymo x 2', icon: '🤖', cost: '$25 - $35', dist: '20分 (12km)', strategy: '使用 Waymo: ERIC4NLG (折 $10)' },
+                    { date: '2/13', route: '房源 → Outlet', time: '11:00', type: 'Waymo x 2', icon: '🤖', cost: '$15 - $25', dist: '15分 (9km)', strategy: '使用 Waymo: JORGENMF5 (折 $10)' },
+                    { date: '2/14', route: '房源 → 迪士尼', time: '06:45', type: 'Lyft x 2', icon: '🚗', cost: '$45 - $55', dist: '40分 (35km)', strategy: '使用 Lyft: LA2026 (首趟 5 折) 或 NEWUSER10 (折 $10)' },
+                    { date: '2/15', route: '房源 → 港口', time: '09:00', type: 'Uber XL x 2', icon: '🚙', cost: '$70 - $90', dist: '50分 (48km)', strategy: '提早出發！目標 10:00 抵達搶頭香 (Boarding Group 1)' },
+                    { date: '2/22', route: '港口 → 機場', time: '09:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '40分 (35km)', strategy: '讓第四位新團員用 Uber 首搭折扣' }
+                ]);
+
+                const promoCodes = ref([
+                    { app: 'Uber', desc: '最常用 / XL 車多', bg: 'bg-slate-900', textColor: 'text-white', codes: [{ code: 'cn0sq', desc: '首趟折 $5' }, { code: 'FTUBERUS2026', desc: '首趟 30% OFF' }, { code: 'US25OFF', desc: '新帳戶省 $25' }] },
+                    { app: 'Lyft', desc: '備案', bg: 'bg-pink-500', textColor: 'text-white', codes: [{ code: 'LA2026', desc: '首趟 50% OFF' }, { code: 'NEWUSER10', desc: '首趟折 $10' }] },
+                    { app: 'Waymo', desc: '無人車首選', bg: 'bg-blue-600', textColor: 'text-white', codes: [{ code: 'ERIC4NLG', desc: '首兩趟折 $10' }, { code: 'JORGENMF5', desc: '首趟折 $10' }] }
+                ]);
+
+                const shipDecks = ref([
+                    { level: '16', name: 'Deck 16 頂層', aft: [{ name: 'Garden Café (自助餐)', free: true }, { name: 'Pool Deck', free: true }] },
+                    { level: '15', name: 'Deck 15 景觀', aft: [{ name: 'Observation Lounge', free: true }] },
+                    { level: '08', name: 'Deck 8 海濱大道', aft: [{ name: 'Cagney\'s Steakhouse', free: false }, { name: 'The Cavern Club', free: true }] },
+                    { level: '07', name: 'Deck 7 娛樂', aft: [{ name: 'Manhattan Room (主餐廳)', free: true }, { name: 'Bliss Theater', free: true }] },
+                    { level: '06', name: 'Deck 6 大廳', aft: [{ name: 'Taste / Savor (主餐廳)', free: true }, { name: 'Atrium', free: true }] }
+                ]);
+
                 const shoppingGroups = ref([
                     {
-                        category: '臉部 & 雷射術後 (Face)',
+                        category: "Trader Joe's 必買",
                         items: [
-                            { name: 'CeraVe 長效潤澤修護霜 (Moisturizing Cream)', desc: '16oz (453g) - 乾肌救星', price: '$18', done: false, image: '1.jpg' },
-                            { name: 'CeraVe 溫和泡沫潔膚露 (Foaming Facial Cleanser)', desc: '12-16oz - 洗臉', price: '$15', done: false, image: '2.jpg' },
-                            { name: 'EltaMD 純物理防曬霜 (UV Physical Broad-Spectrum SPF 41)', desc: '3oz (85g) - 潤色款', price: '$38', done: false, image: '3.png' },
-                            { name: 'CeraVe 修復油膏 (Healing Ointment)', desc: '3-5oz 軟管 - 傷口急救', price: '$11', done: false, image: '4.png' }
+                            { name: 'Cocoa Baton Wafer Cookies', desc: '可可捲心酥', price: '$2.29', done: false, image: 'https://images.openfoodfacts.org/images/products/0000000000078/front_en.3.400.jpg', link: 'https://www.traderjoes.com/home/products/pdp/cocoa-baton-wafer-cookies-057262' },
+                            { name: 'Dark Chocolate Thins', desc: '黑巧薄片', price: '$3.49', done: false, image: 'https://images.openfoodfacts.org/images/products/0000000021616/front_en.3.400.jpg' },
+                            { name: 'Coffee Lover\'s Espresso Beans', desc: '咖啡巧克豆', price: '$1.99', done: false, image: 'https://images.openfoodfacts.org/images/products/0000000002167/front_en.3.400.jpg' },
+                            { name: 'Dark Choc Covered Pretzels', desc: '黑巧蝴蝶餅', price: '$4.29', done: false, image: 'https://images.openfoodfacts.org/images/products/0000000007559/front_en.3.400.jpg' },
+                            { name: 'Peanut Butter Filled Pretzels', desc: '花生醬蝴蝶餅', price: '$2.99', done: false, image: 'https://images.openfoodfacts.org/images/products/0000000000691/front_en.3.400.jpg' },
+                            { name: 'Everything But The Bagel', desc: '貝果調味粉', price: '$1.99', done: false, image: 'https://images-na.ssl-images-amazon.com/images/P/B06W9N8X9H.01._SCLZZZZZZZ_.jpg' },
+                            { name: 'Mushroom Umami Seasoning', desc: '蘑菇鮮味粉', price: '$2.99', done: false, image: 'https://www.traderjoes.com/content/dam/trjo/products/063804/063804.png' },
+                            { name: 'Canned Smoked Trout', desc: '煙燻鱒魚', price: '$3.99', done: false, image: 'https://images-na.ssl-images-amazon.com/images/P/B015VF043G.01._SCLZZZZZZZ_.jpg' }
                         ]
                     },
                     {
-                        category: '身體乾癬 (Body Psoriasis)',
+                        category: '藥妝 & 保健 (Pharmacy)',
                         items: [
-                            { name: 'CeraVe 乾癬保濕乳霜 (Psoriasis Moisturizing Cream)', desc: '8oz (227g) - 銀標去屑/含水楊酸', price: '$25', done: false, image: '5.png' },
-                            { name: 'CeraVe 止癢保濕霜 (Itch Relief Moisturizing Cream)', desc: '12oz (340g) - 紅標急救', price: '$20', done: false, image: '6.jpg' }
+                            { name: 'Moisturizing Cream', desc: '長效修護霜 16oz', price: '$18', done: false, image: 'https://m.media-amazon.com/images/I/61S+XZ-N7JL._AC_SL1500_.jpg' },
+                            { name: 'Foaming Facial Cleanser', desc: '泡沫潔膚露', price: '$15', done: false, image: 'https://m.media-amazon.com/images/I/71-3+J+k8dL._AC_SL1500_.jpg' },
+                            { name: 'Psoriasis Cream', desc: '乾癬乳霜', price: '$25', done: false, image: 'https://m.media-amazon.com/images/I/61q4-g+k7jL._AC_SL1000_.jpg' },
+                            { name: 'Natrol Melatonin', desc: '褪黑激素 (調時差)', price: '$12', done: false, image: 'https://m.media-amazon.com/images/I/71Fp-1-6ZXL._AC_SL1500_.jpg' },
+                            { name: 'Claritin Allergies + Sinus', desc: '過敏鼻塞藥 (12hr 不嗜睡)', price: '$20', done: false, image: '圖片/鼻塞藥.jpg' }
                         ]
                     },
                     {
-                        category: '頭皮乾癬 (Scalp)',
+                        category: '迪士尼 & 紀念品 (Souvenirs)',
                         items: [
-                            { name: '露得清 T/Sal 去屑洗髮精 (Neutrogena T/Sal Shampoo)', desc: '4.5oz 透明瓶', price: '$10', done: false, image: '7.png' },
-                            { name: 'Scalpicin 頭皮止癢液 (Scalpicin Max Strength)', desc: '1.5oz Max Strength', price: '$10', done: false, image: '8.png' }
-                        ]
-                    },
-                    {
-                        category: '迪士尼周邊 (Disney Merchandise)',
-                        items: [
-                            { name: 'Duffy and Friends (達菲與好朋友)', desc: '去 DCA 的商店找找看', price: 'Varied', done: false, image: 'https://cdn1.parksmedia.wdpromedia.com/media/blog/wp-content/uploads/2023/07/dlr-duffy-and-friends.jpg' },
-                            { name: 'Inside Out (腦筋急轉彎)', desc: '去 Pixar Pier 的 Bing Bong\'s Sweet Stuff', price: 'Varied', done: false, image: 'https://i.pinimg.com/736x/2b/95/8e/2b958e93278923055307733527785532.jpg' }
-                        ]
-                    },
-                    {
-                        category: 'Trader Joe\'s 必買 (Must-Haves)',
-                        items: [
-                            { name: 'Everything but the Bagel Seasoning', desc: '萬用調味粉', price: '$1.99', done: false, image: 'https://www.traderjoes.com/content/dam/trjo/products/m20700/59957.png/jcr:content/renditions/cq5dam.web.1280.1280.png' },
-                            { name: 'Dark Chocolate Peanut Butter Cups', desc: '花生醬黑巧克力杯', price: '$0.99', done: false, image: 'https://www.traderjoes.com/content/dam/trjo/products/m20700/20790.png/jcr:content/renditions/cq5dam.web.1280.1280.png' },
-                            { name: 'Speculoos Cookie Butter', desc: '蓮花餅乾抹醬', price: '$3.99', done: false, image: 'https://www.traderjoes.com/content/dam/trjo/products/m20700/56965.png/jcr:content/renditions/cq5dam.web.1280.1280.png' },
-                            { name: 'Reusable Canvas Bags', desc: '環保帆布袋', price: '$3.99', done: false, image: 'https://m.media-amazon.com/images/I/71Y+P9-XyLL.jpg' }
-                        ]
-                    },
-                    {
-                        category: '零食與伴手禮 (Snacks & Souvenirs)',
-                        items: [
-                            { name: 'Natrol Melatonin (褪黑激素)', desc: '助眠神器/多種劑量可選', price: '$10', done: false, image: 'https://images.natrol.com/images/products/melatonin-fast-dissolve-5mg-strawberry-90ct-bottle.png' }
+                            { name: 'Starbucks "Been There" Mug', desc: 'Disneyland Park 限定版', price: '$24.99', done: false },
+                            { name: 'Spirit Jersey 長衛衣', desc: '背後有 Disneyland 字樣', price: '$79.99', done: false }
                         ]
                     }
                 ]);
 
                 const todos = ref([
                     { text: 'LA 電子簽證 (ESTA)', done: false, tag: '重要' },
-                    { text: '出國前設定好 eSIM (買18天)', done: false, tag: '網路' },
-                    { text: '換美元 (USD)', done: false, tag: '錢' },
-                    { text: '大頭護照照片 x3', done: false, tag: '備用' },
-                    { text: '電子機票、飯店住宿單存手機', done: false, tag: '文件' },
-                    { text: '轉接插頭 (美國 Type A/B)', done: false, tag: '行李' },
-                    { text: '牙刷、牙膏、洗面乳 (美國飯店不一定有)', done: false, tag: '行李' }
+                    { text: '下載 NCL App', done: false, tag: '工具' },
+                    { text: '換美元', done: false, tag: '錢' }
                 ]);
 
-                // --- 狀態 ---
-                const days = ref(initData);
-                const expenses = ref([]);
-                const newExpense = ref({ item: '', amount: '', payer: '我' });
-                const exchangeRate = ref(32.5); // TWD
-                const isMapLoading = ref(false);
-                let mapInstance = null;
+                const documents = ref([
+                    {
+                        title: 'NCL 登船證 (Room 9748)', fields: [
+                            { label: 'Reservation #', value: '61835154' },
+                            { label: 'Stateroom', value: '9748 (Balcony BF)' },
+                            { label: 'Guest 1', value: 'CHEN, YUCHIEH' },
+                            { label: 'Folio # (1)', value: '210752851', isSecret: true },
+                            { label: 'Latitudes # (1)', value: '276928920', isSecret: true },
+                            { label: 'Guest 2', value: 'CHEN, HUNGLIN' },
+                            { label: 'Latitudes # (2)', value: '276957462', isSecret: true },
+                            { label: 'Service Charge', value: 'Prepaid (PSCREC)', isSecret: false },
+                            { label: 'Time', value: '11:00-11:30' }
+                        ]
+                    },
+                    {
+                        title: 'NCL 登船證 (Room 9746)', fields: [
+                            { label: 'Reservation #', value: '61836555' },
+                            { label: 'Stateroom', value: '9746 (Balcony BF)' },
+                            { label: 'Guest 1', value: 'CHEN, SHUCHUAN' },
+                            { label: 'Folio # (1)', value: '210755700', isSecret: true },
+                            { label: 'Latitudes # (1)', value: '276957661', isSecret: true },
+                            { label: 'Guest 2', value: 'CHEN, SHUCHIEN' },
+                            { label: 'Latitudes # (2)', value: '276957859', isSecret: true },
+                            { label: 'Service Charge', value: 'Prepaid (PSCREC)', isSecret: false },
+                            { label: 'Time', value: '11:00-11:30' }
+                        ]
+                    }
+                ]);
 
-                // --- Computed ---
                 const currentDay = computed(() => days.value[currentDayIdx.value]);
-                const totalExpense = computed(() => expenses.value.reduce((sum, e) => sum + e.amount, 0));
-                const weatherIcon = computed(() => {
-                    const c = weather.value.code;
-                    if (c === 0) return 'ph-duotone ph-sun text-yellow-500';
-                    if (c <= 3) return 'ph-duotone ph-cloud-sun text-yellow-500';
-                    if (c <= 48) return 'ph-duotone ph-cloud text-slate-400';
-                    if (c <= 67) return 'ph-duotone ph-cloud-rain text-blue-400';
-                    return 'ph-duotone ph-cloud-snow text-sky-200';
-                });
+                const totalExpense = computed(() => expenses.value.reduce((sum, e) => sum + Number(e.amount), 0));
 
-                // --- Methods ---
-                const getDotColor = (t) => t === 'hotel' ? 'bg-indigo-600' : t === 'shop' ? 'bg-rose-400' : t === 'flight' ? 'bg-sky-500' : 'bg-emerald-500';
-                const getTypeLabel = (t) => t === 'hotel' ? '住宿' : t === 'shop' ? '購物' : t === 'flight' ? '航班' : t === 'transport' ? '交通' : '景點';
-
-                const addItem = () => currentDay.value.items.push({ time: '', type: 'spot', activity: '', location: '', note: '' });
-                const removeItem = (idx) => currentDay.value.items.splice(idx, 1);
-
-                const addExpense = () => {
-                    if (newExpense.value.item && newExpense.value.amount) {
-                        expenses.value.unshift({ ...newExpense.value });
-                        newExpense.value.item = ''; newExpense.value.amount = '';
-                        saveData();
-                    }
-                };
-                const removeExpense = (idx) => { expenses.value.splice(idx, 1); saveData(); };
-
-                // Weather API
-                const fetchWeather = async () => {
-                    try {
-                        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.05&longitude=-118.24&current_weather=true');
-                        const data = await res.json();
-                        weather.value = {
-                            temp: Math.round(data.current_weather.temperature),
-                            code: data.current_weather.weathercode
-                        };
-                    } catch (e) {
-                        console.error('Weather error:', e);
-                    }
+                const checkPass = () => { if (password.value === "2026") isAuthenticated.value = true; else passError.value = true; };
+                const addExpense = () => { if (newExpense.value.item && newExpense.value.amount) { expenses.value.unshift({ ...newExpense.value }); newExpense.value.item = ''; newExpense.value.amount = ''; save(); } };
+                const removeExpense = (idx) => { expenses.value.splice(idx, 1); save(); };
+                const removeDoc = (idx) => { documents.value.splice(idx, 1); save(); };
+                const scrollToDay = (index) => {
+                    currentDayIdx.value = index;
+                    const el = document.getElementById('date-scroller').children[index];
+                    if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 };
 
-                // Map Logic
-                const initMap = async () => {
-                    isMapLoading.value = true;
-                    await nextTick();
-                    if (!document.getElementById('map')) return;
-                    if (mapInstance) { mapInstance.remove(); mapInstance = null; }
-
-                    mapInstance = L.map('map').setView([34.0522, -118.2437], 10); // Default LA
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapInstance);
-
-                    // 1. 加入 KML 匯入的所有地點
-                    const bounds = L.latLngBounds();
-                    kmlLocations.forEach(loc => {
-                        L.marker([loc.lat, loc.lng]).addTo(mapInstance)
-                            .bindPopup(`<b>${loc.name}</b>`).openPopup();
-                        bounds.extend([loc.lat, loc.lng]);
-                    });
-
-                    // 2. 嘗試 Geocode 當前行程中尚未在 KML 中的地點 (可選)
-                    // 這裡為了效能與避免重複，主要依賴 KML 匯入的精確座標
-
-                    mapMarkersCount.value = kmlLocations.length;
-
-                    if (bounds.isValid()) mapInstance.fitBounds(bounds, { padding: [50, 50] });
-                    isMapLoading.value = false;
+                // Google Maps Helper
+                const getGoogleMapsLink = (location) => {
+                    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(location);
                 };
 
                 // LocalStorage
-                const saveData = () => {
-                    localStorage.setItem('trip_2026_data', JSON.stringify({
-                        days: days.value,
-                        expenses: expenses.value,
-                        shop: shoppingGroups.value,
-                        todo: todos.value
-                    }));
-                };
-                const loadData = () => {
-                    const d = localStorage.getItem('trip_2026_data');
+                const save = () => localStorage.setItem('trip2026_refined', JSON.stringify({ expenses: expenses.value, docs: documents.value, todos: todos.value, shop: shoppingGroups.value }));
+                const load = () => {
+                    const d = localStorage.getItem('trip2026_refined');
                     if (d) {
-                        const parsed = JSON.parse(d);
-                        if (parsed.expenses) expenses.value = parsed.expenses;
-                        // 注意：如果想保留之前的自訂行程編輯，請取消註解下行：
-                        // if(parsed.days) days.value = parsed.days; 
-                        if (parsed.shop) shoppingGroups.value = parsed.shop;
-                        if (parsed.todo) todos.value = parsed.todo;
+                        const p = JSON.parse(d);
+                        if (p.expenses) expenses.value = p.expenses;
+                        if (p.todos) todos.value = p.todos;
+                        if (p.shop) shoppingGroups.value = p.shop;
                     }
                 };
 
-                watch([days, expenses, shoppingGroups, todos], saveData, { deep: true });
-                watch(viewMode, (v) => { if (v === 'map') initMap(); });
-                watch(currentDayIdx, () => { if (viewMode.value === 'map') initMap(); });
-
                 onMounted(() => {
-                    loadData();
-                    fetchWeather(); // 啟動天氣
+                    load();
+                    fetch('https://api.open-meteo.com/v1/forecast?latitude=34.05&longitude=-118.24&current_weather=true&temperature_unit=celsius')
+                        .then(r => r.json()).then(d => weather.value = d.current_weather);
                 });
 
                 return {
-                    viewMode, guideTab, currentDayIdx, days, currentDay,
-                    expenses, newExpense, addExpense, removeExpense, exchangeRate, totalExpense,
-                    shoppingGroups, todos, shipDecks,
-                    getDotColor, getTypeLabel, addItem, removeItem,
-                    isMapLoading, initMap, weather, weatherIcon, mapMarkersCount
+                    viewMode, password, isAuthenticated, passError, guideTab, currentDayIdx, weather,
+                    days, transportPlan, promoCodes, shipDecks, shoppingGroups, todos, documents, expenses, newExpense, exchangeRate, totalExpense, currentDay,
+                    checkPass, addExpense, removeExpense, removeDoc, getWeatherIcon: (code) => {
+                        if (code === undefined) return 'ph-spinner';
+                        if (code <= 1) return 'ph-sun';
+                        if (code <= 3) return 'ph-cloud-sun';
+                        return 'ph-cloud-rain';
+                    }, scrollToDay, getGoogleMapsLink
                 };
             }
-        }).mount('#app')
+        }).mount('#app');
     </script>
 </body>
 
