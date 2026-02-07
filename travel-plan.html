@@ -265,11 +265,126 @@
                                     'bg-cyan-500': item.type === 'boat',
                                     'bg-indigo-400': item.type === 'flight',
                                     'bg-rose-400': item.type === 'food' || item.type === 'shop',
-                                    'bg-emerald-400': item.type === 'spot' || item.type === 'transport'
+                                    'bg-emerald-400': item.type === 'spot' || item.type === 'transport',
+                                    'bg-slate-900': item.type === 'shuttle-guide'
                                  }"></div>
 
-                                <!-- Content -->
-                                <div :class="item.isStrategy ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100 shadow-amber-100' : 'bg-white border-stone-100 shadow-stone-100'"
+                                <!-- Shuttle Guide Content -->
+                                <div v-if="item.type === 'shuttle-guide'"
+                                    class="bg-slate-900 text-white rounded-[1.8rem] p-6 shadow-xl border border-slate-700 relative overflow-hidden group">
+                                    <i
+                                        class="ph-duotone ph-phone-outgoing text-white absolute -right-6 -top-6 opacity-10 text-[120px]"></i>
+                                    <h3
+                                        class="text-xl font-black mb-6 flex items-center gap-2 relative z-10 border-b border-slate-700 pb-4">
+                                        <span class="text-2xl">🇺🇸</span> LAX 接駁車指南
+                                    </h3>
+                                    <div class="space-y-8 relative z-10">
+                                        <!-- Step 1 -->
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div
+                                                    class="bg-emerald-500 text-slate-900 w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shadow-lg shadow-emerald-500/50">
+                                                    1</div>
+                                                <h4 class="font-bold text-emerald-400 text-base">打電話給飯店</h4>
+                                            </div>
+                                            <a href="tel:+13106457700"
+                                                class="flex items-center justify-between bg-white/10 hover:bg-white/20 transition p-4 rounded-xl mb-4 border border-white/10 group">
+                                                <span
+                                                    class="font-mono font-black text-xl tracking-wide group-hover:text-emerald-300 transition-colors">+1-310-645-7700</span>
+                                                <div
+                                                    class="bg-emerald-500 p-2 rounded-full text-slate-900 shadow-lg group-hover:scale-110 transition-transform">
+                                                    <i class="ph-fill ph-phone-outgoing text-lg"></i>
+                                                </div>
+                                            </a>
+                                            <div class="space-y-3">
+                                                <div
+                                                    class="bg-slate-800 p-4 rounded-xl border-l-4 border-indigo-500 shadow-md">
+                                                    <p
+                                                        class="text-[10px] text-indigo-300 font-bold uppercase tracking-wider mb-1.5">
+                                                        You Say</p>
+                                                    <p class="text-sm font-medium leading-relaxed text-white">"Hello, I
+                                                        am at <span
+                                                            class="text-emerald-400 font-bold bg-emerald-400/10 px-1 rounded">Terminal
+                                                            B</span>. There are <span
+                                                            class="text-emerald-400 font-bold bg-emerald-400/10 px-1 rounded">3
+                                                            people</span>. We need a shuttle pickup."</p>
+                                                    <p class="text-[10px] text-slate-500 mt-1">你好，我在 B 航廈，有 3 個人需要接駁。
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    class="bg-slate-800 p-4 rounded-xl border-l-4 border-indigo-500 shadow-md">
+                                                    <p
+                                                        class="text-[10px] text-indigo-300 font-bold uppercase tracking-wider mb-1.5">
+                                                        You Answer</p>
+                                                    <p class="text-sm font-medium leading-relaxed text-white">"Yes, we
+                                                        are going to <span
+                                                            class="text-emerald-400 font-bold bg-emerald-400/10 px-1 rounded">Level
+                                                            2, Red Sign</span> now."</p>
+                                                    <p class="text-[10px] text-slate-500 mt-1">是的，我們前往二樓紅牌子。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Step 2 -->
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div
+                                                    class="bg-emerald-500 text-slate-900 w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shadow-lg shadow-emerald-500/50">
+                                                    2</div>
+                                                <h4 class="font-bold text-emerald-400 text-base">移動到上車點</h4>
+                                            </div>
+                                            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                                                <div class="flex gap-3 items-start">
+                                                    <span
+                                                        class="bg-slate-700 text-[10px] px-2 py-0.5 rounded text-slate-300 font-bold shrink-0 mt-0.5">換層</span>
+                                                    <p class="text-xs text-slate-300 leading-relaxed">領完行李在 1 樓，搭電梯到
+                                                        <span class="text-white font-bold bg-white/10 px-1 rounded">2 樓
+                                                            (Departures)</span>。
+                                                    </p>
+                                                </div>
+                                                <div class="flex gap-3 items-start">
+                                                    <span
+                                                        class="bg-slate-700 text-[10px] px-2 py-0.5 rounded text-slate-300 font-bold shrink-0 mt-0.5">找牌</span>
+                                                    <p class="text-xs text-slate-300 leading-relaxed">走出大門過馬路，找 <span
+                                                            class="text-rose-400 font-bold bg-rose-900/30 px-1 rounded border border-rose-900/50">Red
+                                                            Sign</span> (紅色標誌)。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Step 3 -->
+                                        <div>
+                                            <div class="flex items-center gap-3 mb-4">
+                                                <div
+                                                    class="bg-emerald-500 text-slate-900 w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shadow-lg shadow-emerald-500/50">
+                                                    3</div>
+                                                <h4 class="font-bold text-emerald-400 text-base">認車與上車</h4>
+                                            </div>
+                                            <div
+                                                class="bg-white text-slate-900 p-4 rounded-xl border-4 border-emerald-500 relative shadow-xl">
+                                                <div
+                                                    class="absolute -top-3 -right-3 bg-emerald-500 text-white text-[10px] font-black px-2 py-1 rounded-full shadow-md uppercase tracking-wider">
+                                                    Must Check</div>
+                                                <p class="font-black text-lg mb-1">Holiday Inn <span
+                                                        class="text-emerald-600 underline decoration-4 underline-offset-4">Express</span>
+                                                </p>
+                                                <p
+                                                    class="text-[10px] text-slate-500 font-bold mb-3 flex items-center gap-1">
+                                                    <i class="ph-fill ph-warning text-amber-500"></i> 必須要有 Express 字樣！
+                                                </p>
+                                                <div class="bg-slate-100 p-3 rounded-lg border border-slate-200">
+                                                    <p
+                                                        class="text-[10px] text-slate-400 font-bold uppercase mb-1 tracking-wider">
+                                                        上車再次確認</p>
+                                                    <p class="text-sm font-bold text-slate-800 italic">"To Holiday Inn
+                                                        Express?"</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Normal Content -->
+                                <div v-if="item.type !== 'shuttle-guide'"
+                                    :class="item.isStrategy ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100 shadow-amber-100' : 'bg-white border-stone-100 shadow-stone-100'"
                                     class="p-5 rounded-[1.8rem] border shadow-md transition-all duration-300 relative overflow-hidden group">
 
                                     <!-- Decorative BG for Strategy -->
@@ -347,15 +462,32 @@
                                                     </div>
                                                     <i
                                                         class="ph-bold ph-arrow-right text-stone-400 group-hover/btn:text-rose-500 group-hover/btn:translate-x-1 transition-transform"></i>
-                                                </a>
-                                            </div>
+                                                    <div class="flex items-center gap-2 flex-wrap">
+                                                        <!-- Link Button for Map -->
+                                                        <div v-if="item.link" class="mt-3">
+                                                            <a :href="item.link" target="_blank"
+                                                                class="inline-block bg-white/20 hover:bg-white/30 text-stone-600 font-bold text-xs py-2 px-4 rounded-xl transition border border-stone-200">
+                                                                <i class="ph-bold ph-map-pin mr-1"></i> 地圖導航
+                                                            </a>
+                                                        </div>
 
-                                            <!-- Link Button for Strategy -->
-                                            <div v-if="item.link && item.isStrategy" class="mt-3">
-                                                <a :href="item.link" target="_blank"
-                                                    class="w-full block text-center bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-3 rounded-2xl transition shadow-lg shadow-amber-200">
-                                                    開啟地圖路線
-                                                </a>
+                                                        <!-- Ticket Button -->
+                                                        <div v-if="item.ticket" class="mt-3">
+                                                            <button @click="window.open(item.ticket)"
+                                                                class="inline-block bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2 px-4 rounded-xl transition shadow-lg shadow-slate-500/30">
+                                                                <i class="ph-bold ph-ticket mr-1 text-amber-400"></i>
+                                                                查看門票
+                                                            </button>
+                                                        </div>
+
+                                                        <!-- Link Button for Strategy -->
+                                                        <div v-if="item.link && item.isStrategy" class="mt-3">
+                                                            <a :href="item.link" target="_blank"
+                                                                class="w-full block text-center bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-3 rounded-2xl transition shadow-lg shadow-amber-200">
+                                                                開啟地圖路線
+                                                            </a>
+                                                        </div>
+                                                    </div>
                                             </div>
                                         </div>
                                     </div>
@@ -873,8 +1005,8 @@
 
                 // --- DATA ---
                 const days = ref([
-                    { date: '2/11 (三)', shortDate: '2/11', title: '抵達 LA & 入住飯店', flight: { startTime: '23:40', startAirport: 'TPE', number: 'JX2', endTime: '19:00', endAirport: 'LAX' }, items: [{ time: '19:00', type: 'flight', activity: '抵達 LAX', location: 'Tom Bradley International Terminal, Los Angeles, CA', note: '入境檢查' }, { time: '20:30', type: 'hotel', activity: 'Check-in', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '搭乘紅色標誌接駁車' }, { time: '21:30', type: 'shop', activity: '買水', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '簡單補給' }] },
-                    { date: '2/12 (四)', shortDate: '2/12', title: 'LA 市區步行', items: [{ time: '09:30', type: 'shop', activity: "Trader Joe's", location: 'Trader Joe\'s, 8611 S Sepulveda Blvd, Los Angeles, CA 90045', note: '買伴手禮' }, { time: '12:00', type: 'hotel', activity: 'Check-out', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '退房，帶著行李' }, { time: '12:00', isStrategy: true, activity: '💡 Plan B: 直送行李 (推薦)', note: '若預算許可 ($60-80)，推薦叫 UberXL 直奔 Monterey Park 放行李。\n1. 12:00 叫車前往 Monterey Park (約50分)\n2. 13:15 放行李 (需先確認房東)\n3. 13:30 搭 Uber 進市區 (約20分) 接續行程' }, { time: '12:30', type: 'transport', activity: 'Plan A: FlyAway', location: 'LAX Tom Bradley International Terminal', note: '省錢方案：Lower Level (入境層) 綠色柱子搭車 -> Union Station ($9.75)' }, { time: '14:00', type: 'spot', activity: '市區步行開始', location: 'Los Angeles Union Station, 800 N Alameda St, Los Angeles, CA 90012', note: '最後書店 -> 中央市場 -> 天使鐵路 -> The Broad', link: 'https://www.google.com/maps/dir/?api=1&origin=Los+Angeles+Union+Station&destination=The+Broad&waypoints=The+Last+Bookstore|Grand+Central+Market|Angels+Flight+Railway|Walt+Disney+Concert+Hall&travelmode=walking' }, { time: '14:10', type: 'spot', activity: '最後書店 The Last Bookstore', location: 'The Last Bookstore, 453 S Spring St, Los Angeles, CA 90013', note: '必拍書牆隧道' }, { time: '14:50', type: 'food', activity: 'Grand Central Market 午餐', location: 'Grand Central Market, 317 S Broadway, Los Angeles, CA 90013', note: '推薦 Eggslut 或 Tacos Tumbras' }, { time: '15:30', type: 'spot', activity: '天使鐵路 (Angels Flight)', location: 'Angels Flight Railway, 351 S Hill St, Los Angeles, CA 90013', note: '搭纜車上山' }, { time: '15:45', type: 'spot', activity: '迪士尼音樂廳 (外觀)', location: 'Walt Disney Concert Hall, 111 S Grand Ave, Los Angeles, CA 90012', note: '拍照' }, { time: '16:00', type: 'spot', activity: 'The Broad (預約)', location: 'The Broad, 221 S Grand Ave, Los Angeles, CA 90012', note: '⚠️ 預約 16:00 準時入場 / 草間彌生' }, { time: '17:30', type: 'food', activity: 'Blue Bottle Coffee', location: 'Blue Bottle Coffee, 300 S Broadway, Los Angeles, CA 90013', note: '逛完如下山可去' }, { time: '18:30', type: 'transport', activity: '回 Monterey Park', location: 'Monterey Park, CA', note: '' }] },
+                    { date: '2/11 (三)', shortDate: '2/11', title: '抵達 LA & 入住飯店', flight: { startTime: '23:40', startAirport: 'TPE', number: 'JX2', endTime: '19:00', endAirport: 'LAX' }, items: [{ time: '19:00', type: 'flight', activity: '抵達 LAX', location: 'Tom Bradley International Terminal, Los Angeles, CA', note: '入境檢查' }, { type: 'shuttle-guide' }, { time: '20:30', type: 'hotel', activity: 'Check-in', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '搭乘紅色標誌接駁車' }, { time: '21:30', type: 'shop', activity: '買水', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '簡單補給' }] },
+                    { date: '2/12 (四)', shortDate: '2/12', title: 'LA 市區步行', items: [{ time: '09:30', type: 'shop', activity: "Trader Joe's", location: 'Trader Joe\'s, 8611 S Sepulveda Blvd, Los Angeles, CA 90045', note: '買伴手禮' }, { time: '12:00', type: 'hotel', activity: 'Check-out', location: 'Holiday Inn Express Los Angeles LAX Airport, 8620 Airport Blvd, Los Angeles, CA 90045', note: '退房，帶著行李' }, { time: '12:00', isStrategy: true, activity: '💡 Plan B: 直送行李 (推薦)', note: '若預算許可 ($60-80)，推薦叫 UberXL 直奔 Monterey Park 放行李。\n1. 12:00 叫車前往 Monterey Park (約50分)\n2. 13:15 放行李 (需先確認房東)\n3. 13:30 搭 Uber 進市區 (約20分) 接續行程' }, { time: '12:30', type: 'transport', activity: 'Plan A: FlyAway', location: 'LAX Tom Bradley International Terminal', note: '省錢方案：Lower Level (入境層) 綠色柱子搭車 -> Union Station ($9.75)' }, { time: '14:00', type: 'spot', activity: '市區步行開始', location: 'Los Angeles Union Station, 800 N Alameda St, Los Angeles, CA 90012', note: '最後書店 -> 中央市場 -> 天使鐵路 -> The Broad', link: 'https://www.google.com/maps/dir/?api=1&origin=Los+Angeles+Union+Station&destination=The+Broad&waypoints=The+Last+Bookstore|Grand+Central+Market|Angels+Flight+Railway|Walt+Disney+Concert+Hall&travelmode=walking' }, { time: '14:10', type: 'spot', activity: '最後書店 The Last Bookstore', location: 'The Last Bookstore, 453 S Spring St, Los Angeles, CA 90013', note: '必拍書牆隧道' }, { time: '14:50', type: 'food', activity: 'Grand Central Market 午餐', location: 'Grand Central Market, 317 S Broadway, Los Angeles, CA 90013', note: '推薦 Eggslut 或 Tacos Tumbras' }, { time: '15:30', type: 'spot', activity: '天使鐵路 (Angels Flight)', location: 'Angels Flight Railway, 351 S Hill St, Los Angeles, CA 90013', note: '搭纜車上山' }, { time: '15:45', type: 'spot', activity: '迪士尼音樂廳 (外觀)', location: 'Walt Disney Concert Hall, 111 S Grand Ave, Los Angeles, CA 90012', note: '拍照' }, { time: '16:00', type: 'spot', activity: 'The Broad (預約)', location: 'The Broad, 221 S Grand Ave, Los Angeles, CA 90012', note: '⚠️ 預約 16:00 準時入場 / 草間彌生', ticket: '圖片/Infinity Mirrored room admission.png' }, { time: '17:30', type: 'food', activity: 'Blue Bottle Coffee', location: 'Blue Bottle Coffee, 300 S Broadway, Los Angeles, CA 90013', note: '逛完如下山可去' }, { time: '18:30', type: 'transport', activity: '回 Monterey Park', location: 'Monterey Park, CA', note: '' }] },
                     {
                         date: '2/13 (五)', shortDate: '2/13', title: 'Citadel Outlets 全日購物', items: [
                             { time: '10:00', type: 'transport', activity: '前往 Outlet', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: '睡飽出發，搭 Uber 約 20 分鐘' },
