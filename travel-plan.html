@@ -441,6 +441,25 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Images Gallery (Vertical) -->
+                                            <div v-if="item.images && item.images.length"
+                                                class="flex flex-col gap-3 mt-3">
+                                                <div v-for="(img, i) in item.images" :key="i"
+                                                    class="w-full h-48 rounded-xl overflow-hidden border-2 border-stone-200 relative group/img cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
+                                                    @click.prevent="window.open(img, '_blank')">
+                                                    <div
+                                                        class="absolute inset-0 bg-black/0 group-hover/img:bg-black/40 transition-all duration-300 flex items-center justify-center z-10">
+                                                        <div
+                                                            class="opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 text-white text-center">
+                                                            <i
+                                                                class="ph-bold ph-magnifying-glass-plus text-4xl mb-2 drop-shadow-lg"></i>
+                                                            <div class="text-sm font-bold drop-shadow-lg">點擊放大</div>
+                                                        </div>
+                                                    </div>
+                                                    <img :src="img" class="w-full h-full object-cover" alt="賞鯨圖片">
+                                                </div>
+                                            </div>
+
                                             <!-- Navigation Button (Prominent) -->
                                             <div v-if="item.location && !item.isStrategy" class="mt-4">
                                                 <a :href="getGoogleMapsLink(item.location)" target="_blank"
@@ -579,9 +598,12 @@
                             <button @click="guideTab = 'action'"
                                 :class="guideTab === 'action' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
                                 class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">登船行動</button>
+                            <button @click="guideTab = 'dining'"
+                                :class="guideTab === 'dining' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
+                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">必吃美食</button>
                             <button @click="guideTab = 'health'"
                                 :class="guideTab === 'health' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
-                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">餐飲規定</button>
+                                class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">健康規定</button>
                             <button @click="guideTab = 'decks'"
                                 :class="guideTab === 'decks' ? 'bg-white text-cyan-600 shadow-lg scale-105' : 'bg-cyan-800/40 text-cyan-100 hover:bg-cyan-700/50'"
                                 class="px-5 py-2.5 rounded-full transition-all whitespace-nowrap">甲板地圖</button>
@@ -589,6 +611,107 @@
                     </div>
 
                     <div v-if="guideTab === 'action'" class="space-y-5">
+                        <!-- Timeline -->
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden relative">
+                            <div class="bg-amber-50 px-6 py-4 border-b border-amber-100 flex items-center gap-3">
+                                <div class="bg-white p-2 rounded-full text-amber-600 shadow-sm"><i
+                                        class="ph-fill ph-hourglass-high text-xl"></i></div>
+                                <h3 class="font-black text-amber-900">Bill 團隊黃金時間軸</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="font-mono text-xs font-bold text-amber-600 w-12 pt-1">11:00</div>
+                                    <div class="border-l-2 border-amber-100 pl-4 pb-2 relative">
+                                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-amber-400">
+                                        </div>
+                                        <h4 class="text-sm font-bold text-stone-800">抵達碼頭 Check-in</h4>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="font-mono text-xs font-bold text-amber-600 w-12 pt-1">11:45</div>
+                                    <div class="border-l-2 border-amber-100 pl-4 pb-2 relative">
+                                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-amber-400">
+                                        </div>
+                                        <h4 class="text-sm font-bold text-stone-800">登船！手機開飛航+連WiFi</h4>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="font-mono text-xs font-bold text-amber-600 w-12 pt-1">12:00</div>
+                                    <div class="border-l-2 border-amber-100 pl-4 pb-2 relative">
+                                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-amber-400">
+                                        </div>
+                                        <h4 class="text-sm font-bold text-stone-800">直奔 Deck 6 櫃檯</h4>
+                                        <p class="text-xs text-stone-500 mt-1">搞定 8 人晚餐預約 (人工處理)</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="font-mono text-xs font-bold text-amber-600 w-12 pt-1">12:15</div>
+                                    <div class="border-l-2 border-amber-100 pl-4 pb-2 relative">
+                                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-amber-400">
+                                        </div>
+                                        <h4 class="text-sm font-bold text-stone-800">Taste / Savor 吃午餐</h4>
+                                        <p class="text-xs text-stone-500 mt-1">避開 16 樓自助餐人潮</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="font-mono text-xs font-bold text-amber-600 w-12 pt-1">13:30</div>
+                                    <div class="border-l-2 border-amber-100 pl-4 pb-2 relative">
+                                        <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-amber-400">
+                                        </div>
+                                        <h4 class="text-sm font-bold text-stone-800">預約娛樂秀 & 進房</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Core Tasks -->
+                        <div class="bg-indigo-900 text-white rounded-[2rem] p-6 shadow-xl relative overflow-hidden">
+                            <div
+                                class="absolute right-0 top-0 w-32 h-32 bg-indigo-500/30 rounded-full blur-3xl -mr-10 -mt-10">
+                            </div>
+                            <h3 class="text-xl font-black mb-4 flex items-center gap-2"><i
+                                    class="ph-fill ph-rocket-launch text-2xl"></i> 登船三大核心任務</h3>
+
+                            <div class="space-y-4 relative z-10">
+                                <!-- Task 1 -->
+                                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                                    <h4 class="font-bold text-sm text-indigo-200 mb-2 flex items-center gap-2"><span
+                                            class="bg-indigo-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs">1</span>
+                                        搞定 8 人晚餐 (每晚 6:00)</h4>
+                                    <p class="text-xs text-slate-300 mb-3">地點：Deck 6 (Teppanyaki 前櫃檯 / Guest Services)
+                                    </p>
+                                    <div class="bg-black/30 p-3 rounded-lg">
+                                        <p class="text-[10px] text-indigo-300 font-bold uppercase mb-1">Show to Staff
+                                        </p>
+                                        <p class="text-sm font-medium italic">"Hi, we have a group of 8. We'd like to
+                                            make a standing reservation for 6:00 PM every night at Manhattan Room or
+                                            Taste/Savor."</p>
+                                    </div>
+                                </div>
+
+                                <!-- Task 2 -->
+                                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                                    <h4 class="font-bold text-sm text-indigo-200 mb-2 flex items-center gap-2"><span
+                                            class="bg-indigo-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs">2</span>
+                                        午餐避雷指南</h4>
+                                    <p class="text-xs text-slate-300">❌ 絕對不要去 16 樓 Garden Café (戰場)。<br>✅ 去 Deck 6 的
+                                        <strong class="text-white">Taste</strong> 或 <strong
+                                            class="text-white">Savor</strong> 主餐廳，坐著點餐 (牛排/漢堡)。
+                                    </p>
+                                </div>
+
+                                <!-- Task 3 -->
+                                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
+                                    <h4 class="font-bold text-sm text-indigo-200 mb-2 flex items-center gap-2"><span
+                                            class="bg-indigo-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs">3</span>
+                                        娛樂搶票</h4>
+                                    <p class="text-xs text-slate-300">連上 WiFi 後開 APP 點 "Entertainment"。看到 Comedy 或 Theme
+                                        Party 先預約。若 APP 沒有，去 Deck 6 Box Office。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group Info -->
                         <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 p-1">
                             <div class="bg-purple-50 rounded-[1.6rem] p-4 flex items-center gap-3 mb-2">
                                 <div class="bg-white p-2.5 rounded-full text-purple-600 shadow-sm"><i
@@ -611,18 +734,18 @@
                                 <div class="space-y-2 font-body">
                                     <div
                                         class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
-                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836555</span>
-                                        <span class="text-stone-500 font-bold text-xs">CHEN, SHUCHUAN & SHUCHIEN</span>
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836555</span><span
+                                            class="text-stone-500 font-bold text-xs">CHEN, SHUCHUAN & SHUCHIEN</span>
                                     </div>
                                     <div
                                         class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
-                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836945</span>
-                                        <span class="text-stone-500 font-bold text-xs">HSU</span>
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61836945</span><span
+                                            class="text-stone-500 font-bold text-xs">HSU</span>
                                     </div>
                                     <div
                                         class="flex justify-between items-center p-3.5 bg-stone-50 rounded-2xl border border-stone-100">
-                                        <span class="font-mono font-bold text-stone-600 text-sm">#61835820</span>
-                                        <span class="text-stone-500 font-bold text-xs">HSU</span>
+                                        <span class="font-mono font-bold text-stone-600 text-sm">#61835820</span><span
+                                            class="text-stone-500 font-bold text-xs">HSU</span>
                                     </div>
                                 </div>
                             </div>
@@ -638,24 +761,75 @@
                                 <div class="grid grid-cols-2 gap-3">
                                     <div
                                         class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
-                                        <span class="font-mono font-black text-xl text-emerald-700 block">9748</span>
-                                        <span class="text-xs text-stone-500 font-bold">潔、泓</span>
+                                        <span
+                                            class="font-mono font-black text-xl text-emerald-700 block">9748</span><span
+                                            class="text-xs text-stone-500 font-bold">潔、泓</span>
                                     </div>
                                     <div
                                         class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
-                                        <span class="font-mono font-black text-xl text-emerald-700 block">9746</span>
-                                        <span class="text-xs text-stone-500 font-bold">娟、倩</span>
+                                        <span
+                                            class="font-mono font-black text-xl text-emerald-700 block">9746</span><span
+                                            class="text-xs text-stone-500 font-bold">娟、倩</span>
                                     </div>
                                     <div
                                         class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
-                                        <span class="font-mono font-black text-xl text-emerald-700 block">9742</span>
-                                        <span class="text-xs text-stone-500 font-bold">恆、詠</span>
+                                        <span
+                                            class="font-mono font-black text-xl text-emerald-700 block">9742</span><span
+                                            class="text-xs text-stone-500 font-bold">恆、詠</span>
                                     </div>
                                     <div
                                         class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center hover:bg-emerald-100/50 transition">
-                                        <span class="font-mono font-black text-xl text-emerald-700 block">9740</span>
-                                        <span class="text-xs text-stone-500 font-bold">芳、瑞</span>
+                                        <span
+                                            class="font-mono font-black text-xl text-emerald-700 block">9740</span><span
+                                            class="text-xs text-stone-500 font-bold">芳、瑞</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="guideTab === 'dining'" class="space-y-5">
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">
+                            <div class="bg-rose-50 px-6 py-4 border-b border-rose-100 flex items-center gap-3">
+                                <div class="bg-white p-2 rounded-full text-rose-600 shadow-sm"><i
+                                        class="ph-fill ph-hamburger text-xl"></i></div>
+                                <h3 class="font-black text-rose-900">免費餐廳必吃清單</h3>
+                            </div>
+                            <div class="p-6 space-y-6 font-body">
+                                <div>
+                                    <h4 class="font-bold text-rose-700 text-sm mb-2 flex items-center gap-2"><i
+                                            class="ph-fill ph-carrot"></i> 前菜 (Appetizers)</h4>
+                                    <ul class="text-xs text-stone-600 space-y-2 pl-2 border-l-2 border-rose-100">
+                                        <li><strong class="text-stone-800">French Onion Soup:</strong> 法式洋蔥湯，起司濃郁必點！
+                                        </li>
+                                        <li><strong class="text-stone-800">Escargots:</strong> 法式焗蝸牛，沾麵包超好吃。</li>
+                                        <li><strong class="text-stone-800">Beef Carpaccio:</strong> 生牛肉薄片，鮮嫩開胃。</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rose-700 text-sm mb-2 flex items-center gap-2"><i
+                                            class="ph-fill ph-fork-knife"></i> 主菜 (Mains)</h4>
+                                    <ul class="text-xs text-stone-600 space-y-2 pl-2 border-l-2 border-rose-100">
+                                        <li><strong class="text-stone-800">Prime Rib:</strong> 烤肋眼牛排，第一晚通常有，點
+                                            Medium-Rare。</li>
+                                        <li><strong class="text-stone-800">Braised Short Ribs:</strong> 燉牛小排，軟嫩入味不踩雷。
+                                        </li>
+                                        <li><strong class="text-stone-800">New York Strip:</strong> 紐約客牛排，經典款。</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-rose-700 text-sm mb-2 flex items-center gap-2"><i
+                                            class="ph-fill ph-cake"></i> 甜點 (Dessert)</h4>
+                                    <ul class="text-xs text-stone-600 space-y-2 pl-2 border-l-2 border-rose-100">
+                                        <li><strong class="text-stone-800">Warm Chocolate Volcano:</strong> 巧克力熔岩蛋糕，NCL
+                                            的靈魂！必吃。</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 mt-2">
+                                    <h4 class="font-bold text-stone-700 text-xs mb-1">🌙 宵夜場 (The Local - Deck 7)</h4>
+                                    <p class="text-[10px] text-stone-500">24小時開放。必吃 <strong
+                                            class="text-stone-700">Reuben Sandwich</strong> (魯賓三明治) 和 <strong
+                                            class="text-stone-700">Chicken Wings</strong> (炸雞翅)。</p>
                                 </div>
                             </div>
                         </div>
@@ -679,8 +853,86 @@
                                 務必攜帶 <strong class="text-stone-900">空保溫瓶</strong>！船上水龍頭可生飲，或去 Garden Café 裝水。
                             </div>
                         </div>
-                    </div>
 
+                        <!-- Seasickness Guide -->
+                        <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-[1.5rem] shadow-sm relative">
+                            <h3 class="font-bold text-indigo-800 flex items-center gap-2 mb-4 text-lg">
+                                <i class="ph-fill ph-first-aid-kit text-2xl"></i> 防暈/不暈實戰技巧
+                            </h3>
+
+                            <div class="space-y-5 font-body">
+                                <!-- Before -->
+                                <div>
+                                    <h4 class="text-sm font-black text-indigo-900 mb-2 flex items-center gap-2">
+                                        <span
+                                            class="bg-indigo-200 text-indigo-800 text-[10px] px-2 py-0.5 rounded-md">出發前</span>
+                                        關鍵時機
+                                    </h4>
+                                    <ul class="text-xs text-indigo-800 space-y-1.5 pl-1">
+                                        <li class="flex gap-2"><span class="shrink-0">1️⃣</span>
+                                            <span><strong>不要空腹/太飽：</strong> 吃蘇打餅乾、香蕉、吐司。<br><span
+                                                    class="text-rose-500 font-bold">❌ 忌咖啡、油膩早餐</span></span>
+                                        </li>
+                                        <li class="flex gap-2"><span class="shrink-0">2️⃣</span>
+                                            <span><strong>暈船藥：</strong> 出發前 <span
+                                                    class="text-rose-500 font-bold">30-60分鐘</span> 吃 (暈了再吃沒效)。</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Onboard -->
+                                <div>
+                                    <h4 class="text-sm font-black text-indigo-900 mb-2 flex items-center gap-2">
+                                        <span
+                                            class="bg-amber-200 text-amber-900 text-[10px] px-2 py-0.5 rounded-md">船上</span>
+                                        穩定關鍵
+                                    </h4>
+                                    <ul class="text-xs text-indigo-800 space-y-1.5 pl-1">
+                                        <li class="flex gap-2"><span class="shrink-0">3️⃣</span>
+                                            <span><strong>站船中間：</strong> 重心最穩。❌ 不要低頭看手機。</span>
+                                        </li>
+                                        <li class="flex gap-2"><span class="shrink-0">4️⃣</span>
+                                            <span><strong>視線鎖定：</strong> 看遠方地平線，不要盯著水面。</span>
+                                        </li>
+                                        <li class="flex gap-2"><span class="shrink-0">5️⃣</span>
+                                            <span><strong>快暈時：</strong> 坐下 + 深呼吸 (吸4秒吐6秒) + 盯遠處固定點。</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Emergency -->
+                                <div>
+                                    <h4 class="text-sm font-black text-indigo-900 mb-2 flex items-center gap-2">
+                                        <span
+                                            class="bg-rose-200 text-rose-900 text-[10px] px-2 py-0.5 rounded-md">急救</span>
+                                        已經暈了
+                                    </h4>
+                                    <ul class="text-xs text-indigo-800 space-y-1.5 pl-1">
+                                        <li class="flex gap-2"><span class="shrink-0">6️⃣</span>
+                                            <span><strong>味覺轉移：</strong> 含薑糖或薄荷糖。</span>
+                                        </li>
+                                        <li class="flex gap-2"><span class="shrink-0">7️⃣</span>
+                                            <span><strong>穴道按壓：</strong> <span class="font-bold">內關穴</span>
+                                                (手腕橫紋下三指寬中間)，壓1-2分鐘。</span>
+                                        </li>
+                                        <li class="flex gap-2"><span class="shrink-0">8️⃣</span>
+                                            <span><strong>放棄拍照：</strong> 讓身體回穩最重要，鯨魚還會再出現。</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Reassurance -->
+                                <div
+                                    class="mt-2 bg-white/60 p-4 rounded-2xl border border-indigo-100 text-xs text-indigo-700 leading-relaxed font-medium flex gap-3">
+                                    <i class="ph-fill ph-heart text-rose-400 text-xl mt-0.5"></i>
+                                    <div>
+                                        <strong>放心玩：</strong><br>
+                                        早場+小船+海況穩，比80%的人不容易暈。照著做，你是「有拍到、沒暈、心情好」的那群人！😌🐋
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div v-if="guideTab === 'decks'" class="space-y-3">
                         <div v-for="deck in shipDecks" :key="deck.level"
                             class="bg-white rounded-[1.5rem] shadow-sm border border-stone-100 overflow-hidden">
@@ -752,7 +1004,8 @@
                                     <i class="ph-bold ph-check text-white text-sm" v-if="todo.done"></i>
                                 </div>
                                 <div class="flex-1 text-sm font-bold transition-opacity"
-                                    :class="{'text-stone-300 line-through': todo.done, 'text-stone-700': !todo.done}">{{
+                                    :class="{'text-stone-300 line-through': todo.done, 'text-stone-700': !todo.done}">
+                                    {{
                                     todo.text }}</div>
                                 <span
                                     class="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md font-bold uppercase">{{
@@ -780,7 +1033,8 @@
                                     </div>
                                     <div class="flex-1 min-w-0 font-body">
                                         <div class="font-bold text-[15px] text-stone-800 transition-opacity"
-                                            :class="{'text-stone-300 line-through': item.done}">{{ item.name }}</div>
+                                            :class="{'text-stone-300 line-through': item.done}">{{ item.name }}
+                                        </div>
                                         <div class="text-xs text-stone-400 mt-1 font-medium">{{ item.desc }}</div>
 
                                         <div class="flex justify-between items-center mt-3">
@@ -820,9 +1074,11 @@
                         </div>
 
                         <div class="relative z-10 mt-6">
-                            <div class="text-sm text-cyan-100 font-medium mb-1 uppercase tracking-widest">Total Expenses
+                            <div class="text-sm text-cyan-100 font-medium mb-1 uppercase tracking-widest">Total
+                                Expenses
                             </div>
-                            <div class="text-6xl font-black font-mono tracking-tighter mb-4">${{ totalExpense }}</div>
+                            <div class="text-6xl font-black font-mono tracking-tighter mb-4">${{ totalExpense }}
+                            </div>
                             <div
                                 class="inline-block bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-white border border-white/20">
                                 ≈ TWD {{ Math.round(totalExpense * exchangeRate).toLocaleString() }}
@@ -1022,8 +1278,22 @@
                     { date: '2/16 (一)', shortDate: '2/16', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '泳池、賽車、雷射槍' }, { time: '21:30', type: 'spot', activity: '秀: ICONS', location: 'Bliss Theater, NCL Bliss', note: '已預約 (Reservation 2 pax)' }] },
                     { date: '2/17 (二)', shortDate: '2/17', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '悠閒的一天，準備明天抵達墨西哥' }] },
                     { date: '2/18 (三)', shortDate: '2/18', title: 'Puerto Vallarta (Dock)', items: [{ time: '08:00', type: 'food', activity: 'Tacos de Canasta Jasmin', location: 'Plaza Marina, Puerto Vallarta, Jalisco, Mexico', note: '早餐推薦：道地「籃子塔可」(馬鈴薯/豆泥/燉肉) / 位於 Marina 地區' }, { time: '09:30', type: 'shop', activity: 'Walmart & Galerias Mall', location: 'Galerias Vallarta Shopping Mall, Puerto Vallarta, Jalisco, Mexico', note: '必買：Molina 香草精、100% Agave 龍舌蘭、墨西哥咖啡豆 (比觀光區便宜)' }, { time: '12:30', type: 'food', activity: 'Campomar 海鮮餐廳', location: 'Restaurante Campomar, Puerto Vallarta, Jalisco, Mexico', note: '當地高評價海鮮 / 適合享用正餐' }, { time: '14:30', type: 'transport', activity: '前往市中心 (搭 Uber)', location: 'Malecon Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '約 15-20 分鐘車程' }, { time: '15:00', type: 'spot', activity: '海濱大道 (The Malecón)', location: 'Malecon Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '散步地標：海馬雕像、瓜達盧佩聖母教堂' }, { time: '17:00', type: 'transport', activity: '準備回船', location: 'Terminal Marítima de Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '建議提早叫車，預留塞車時間' }, { time: '18:00', type: 'boat', activity: '郵輪離港', location: 'Terminal Marítima de Puerto Vallarta, Puerto Vallarta, Jalisco, Mexico', note: '前往 Mazatlán' }] },
-                    { date: '2/19 (四)', shortDate: '2/19', title: 'Mazatlán (Dock) - 舊城探索', items: [{ time: '09:00', isStrategy: true, activity: '🛺 交通體驗：Pulmonia (肺車)', note: '下船後尋找像高爾夫球車的敞篷計程車，吹海風直達市場！\n💡 飲食關鍵字：Sin mayonesa (不要美乃滋)、Poco limón (少檸檬)、Marlin (馬林魚)' }, { time: '09:30', type: 'spot', activity: '皮諾蘇亞雷斯市場 (Mercado Pino Suarez)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '艾菲爾鐵塔風格市場 / 必看：蝦乾 (Camaron Seco)、乾辣椒' }, { time: '10:00', type: 'food', activity: '早午餐：市場 2F 小吃攤 (Fondas)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '必吃：Ceviche de Sierra (檸檬醃魚) - 天然熟成鮮味，配玉米餅' }, { time: '11:00', type: 'spot', activity: '馬查多廣場 & 舊城散步', location: 'Plazuela Machado, Mazatlan, Sinaloa, Mexico', note: '觀察陽台垂吊植物 & 盛開九重葛，超好拍！' }, { time: '12:00', type: 'food', activity: '午餐：Mariscos El Toro', location: 'Mariscos El Toro, Mazatlan, Sinaloa, Mexico', note: '必吃：Tacos de Marlin (煙燻馬林魚塔可) - 吃起來像火腿，搭配起司' }, { time: '13:30', type: 'food', activity: '甜點：Raspados El Manantial', location: 'Raspados El Manantial, Mazatlan, Sinaloa, Mexico', note: '百年古早味燉李子冰 (Raspados de Ciruela) - 天然水果熬煮' }, { time: '14:15', type: 'spot', activity: '懸崖跳水 (El Clavadista)', location: 'El Clavadista, Mazatlan, Sinaloa, Mexico', note: '驚險表演，若覺得精彩可給小費' }, { time: '15:00', type: 'transport', activity: '海濱大道返程 (The Malecón)', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '搭 Pulmonia 沿海邊開回港口，左邊舊城右邊海景' }, { time: '18:00', type: 'boat', activity: '郵輪離港', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '前往 Cabo' }] },
-                    { date: '2/20 (五)', shortDate: '2/20', title: 'Cabo San Lucas (Tender)', items: [{ time: '06:30', type: 'spot', activity: '抵達 Cabo', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '墨西哥 / 需搭接駁船 (Tender) / 06:30 抵達' }, { time: '08:30', type: 'spot', activity: '🐋 Whale Watch Cabo (賞鯨)', location: 'Marina Cabo San Lucas, Cabo San Lucas, Baja California Sur, Mexico', note: '已預約 08:30 / 2月是最佳賞鯨季節 / 請提早前往碼頭集合' }, { time: '14:00', type: 'boat', activity: '離港', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '14:00 離港，末班接駁船通常較早，請注意時間！' }] },
+                    {
+                        date: '2/19 (四)', shortDate: '2/19', title: 'Mazatlán (Dock) - 舊城探索', items: [
+                            { time: '09:00', isStrategy: true, activity: '🛺 交通體驗：Pulmonia (肺車)', note: '下船後尋找像高爾夫球車的敞篷計程車，吹海風直達市場！\n💡 飲食關鍵字：Sin mayonesa (不要美乃滋)、Poco limón (少檸檬)、Marlin (馬林魚)' },
+                            { time: '09:30', type: 'spot', activity: '皮諾蘇亞雷斯市場 (Mercado Pino Suarez)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '艾菲爾鐵塔風格市場 / 必看：蝦乾 (Camaron Seco)、乾辣椒' },
+                            { time: '10:00', type: 'food', activity: '早午餐：市場 2F 小吃攤 (Fondas)', location: 'Mercado Pino Suarez, Mazatlan, Sinaloa, Mexico', note: '必吃：Ceviche de Sierra (檸檬醃魚) - 天然熟成鮮味，配玉米餅' },
+                            { time: '11:00', type: 'spot', activity: '馬查多廣場 & 舊城散步', location: 'Plazuela Machado, Mazatlan, Sinaloa, Mexico', note: '觀察陽台垂吊植物 & 盛開九重葛，超好拍！' },
+                            { time: '12:00', type: 'food', activity: '午餐：Mariscos El Toro', location: 'Mariscos El Toro, Mazatlan, Sinaloa, Mexico', note: '必吃：Tacos de Marlin (煙燻馬林魚塔可) - 吃起來像火腿，搭配起司' },
+                            { time: '13:30', type: 'food', activity: '甜點：Raspados El Manantial', location: 'Raspados El Manantial, Mazatlan, Sinaloa, Mexico', note: '百年古早味燉李子冰 (Raspados de Ciruela) - 天然水果熬煮' },
+                            { time: '14:15', type: 'spot', activity: '懸崖跳水 (El Clavadista)', location: 'El Clavadista, Mazatlan, Sinaloa, Mexico', note: '驚險表演，若覺得精彩可給小費' },
+                            { time: '15:00', type: 'transport', activity: '海濱大道返程 (The Malecón)', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '搭 Pulmonia 沿海邊開回港口，左邊舊城右邊海景' },
+                            { time: '18:00', type: 'boat', activity: '郵輪離港', location: 'Mazatlan Cruise Port, Mazatlan, Sinaloa, Mexico', note: '前往 Cabo' },
+                            { time: '19:00', isStrategy: true, activity: '💡 關鍵任務：確認明日接駁 (Guest Services)', note: '去 Deck 6 櫃台問：\n"Tomorrow we have an 8:00 AM shore excursion in Cabo with CaboTrek. What time does the first tender start? Is there an early tender group?"\n\n目標：確認最早發船時間 & 是否需領號碼牌' },
+                            { time: '20:30', type: 'spot', activity: '整理隨身包 (Pack Light)', location: 'Room', note: '✅ 必帶：船卡、護照影本、墨鏡、防曬、薄外套、暈船藥\n❌ 不帶：大背包、貴重飾品\n⏰ 設鬧鐘 05:45' }
+                        ]
+                    },
+                    { date: '2/20 (五)', shortDate: '2/20', title: 'Cabo San Lucas (Tender)', items: [{ time: '06:30', type: 'spot', activity: '抵達 Cabo', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '墨西哥 / 需搭接駁船 (Tender) / 06:30 抵達' }, { time: '08:00', isStrategy: true, activity: '🐋 Whale Watch Cabo (賞鯨)', location: 'Hotel Tesoro, Blvd. Paseo de la Marina, Local A-20, Colonia Centro, C.P. 23450, Cabo San Lucas', note: '【集合時間】08:00 (提早30分)\n【集合點】Marina Dock M-0 (白色燈塔旁 / D\'Right Joint 餐廳後面)\n【必帶】水、防曬、暈船藥\n【備註】需現場簽 Waiver' }, { time: '08:30', type: 'spot', activity: '賞鯨行程開始', location: 'Marina Cabo San Lucas, Cabo San Lucas, Baja California Sur, Mexico', note: '2月是最佳賞鯨季節', images: ['圖片/賞鯨1.png', '圖片/賞鯨2.jpg'] }, { time: '10:45', type: 'food', activity: '碼頭早午餐', location: 'Hotel Tesoro Los Cabos, Blvd. Paseo de la Marina Lote 9 y 10, Centro, 23450 Cabo San Lucas, B.C.S., Mexico', note: '輕鬆吃，不趕行程。推薦碼頭咖啡廳看海獅。' }, { time: '11:30', type: 'spot', activity: '海景散步 & 拍照', location: 'Marina Cabo San Lucas, Cabo San Lucas, Baja California Sur, Mexico', note: '光線最美時刻，可遠眺 The Arch。' }, { time: '12:45', type: 'transport', activity: '搭 Tender 回船', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '保險回船時間，避開最後一波人潮 (All Aboard 13:30)。' }, { time: '14:00', type: 'boat', activity: '離港', location: 'Cabo San Lucas Cruise Port Terminal, Cabo San Lucas, Baja California Sur, Mexico', note: '14:00 離港，末班接駁船通常較早，請注意時間！' }] },
                     { date: '2/21 (六)', shortDate: '2/21', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '整理行李', location: 'NCL Bliss', note: '準備下船手續' }] },
                     { date: '2/22 (日)', shortDate: '2/22', title: '下船 & 回程', flight: { startTime: '22:50', startAirport: 'LAX', number: 'JX1', endTime: '05:30', endAirport: 'TPE', arrivalOffset: 1 }, items: [{ time: '07:00', type: 'transport', activity: '下船', location: '100 Swinford St, San Pedro, CA 90731', note: 'World Cruise Center / 辦理入境' }, { time: '10:00', type: 'shop', activity: 'Citadel Outlets', location: 'Citadel Outlets, 100 Citadel Dr, Commerce, CA 90040', note: '補貨 (若需要)' }, { time: '19:00', type: 'transport', activity: '前往機場', location: 'Tom Bradley International Terminal, Los Angeles, CA', note: '預備搭機' }] },
                     { date: '2/23 (一)', shortDate: '2/23', title: '飛機上', items: [{ time: '', type: 'transport', activity: '跨越國際換日線', location: 'Pacific Ocean', note: '' }] },
