@@ -578,6 +578,39 @@
                                     <span class="block font-black text-emerald-600 text-sm">{{ item.cost }}</span>
                                 </div>
                             </div>
+
+                            <!-- Addresses with Copy Buttons -->
+                            <div v-if="item.from || item.to" class="mt-3 space-y-2">
+                                <div v-if="item.from"
+                                    class="flex items-start gap-2 bg-blue-50 p-2.5 rounded-lg border border-blue-100">
+                                    <i class="ph-fill ph-map-pin-line text-blue-500 mt-0.5 shrink-0"></i>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-[9px] font-bold text-blue-600 uppercase tracking-wide mb-0.5">
+                                            上車地點</div>
+                                        <div class="text-[11px] text-blue-900 font-medium">{{ item.from }}</div>
+                                    </div>
+                                    <button @click="copyToClipboard(item.from, $event)"
+                                        class="shrink-0 w-7 h-7 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all active:scale-95 group">
+                                        <i
+                                            class="ph-bold ph-copy text-sm group-hover:scale-110 transition-transform"></i>
+                                    </button>
+                                </div>
+                                <div v-if="item.to"
+                                    class="flex items-start gap-2 bg-rose-50 p-2.5 rounded-lg border border-rose-100">
+                                    <i class="ph-fill ph-map-pin text-rose-500 mt-0.5 shrink-0"></i>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-[9px] font-bold text-rose-600 uppercase tracking-wide mb-0.5">
+                                            目的地</div>
+                                        <div class="text-[11px] text-rose-900 font-medium">{{ item.to }}</div>
+                                    </div>
+                                    <button @click="copyToClipboard(item.to, $event)"
+                                        class="shrink-0 w-7 h-7 flex items-center justify-center bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-all active:scale-95 group">
+                                        <i
+                                            class="ph-bold ph-copy text-sm group-hover:scale-110 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div v-if="item.strategy"
                                 class="mt-3 text-[11px] bg-amber-50 text-amber-900 p-3 rounded-xl border border-amber-100 font-medium leading-relaxed flex gap-2">
                                 <i class="ph-fill ph-lightbulb mt-0.5 shrink-0 text-amber-500"></i>
@@ -1273,7 +1306,49 @@
                             { time: '18:30', type: 'transport', activity: '回 Airbnb 整理戰利品', location: 'Monterey Park, CA', note: '晚餐可買回 Airbnb 吃，早點休息，明天迪士尼需要大量體力！' }
                         ]
                     },
-                    { date: '2/14 (六)', shortDate: '2/14', title: 'Disneyland 迪士尼 (LL攻略)', heroImage: '圖片/迪士尼圖片.png', items: [{ time: '07:50', isStrategy: true, activity: '📱 LL 搶票策略', note: '08:00 搶 Space Mountain (優先)\n08:05 買 Rise of the Resistance ILL\n10:00 搶 Tiana\'s Bayou Adventure\n12:00 搶 Indiana Jones Adventure\n14:00 搶 Mickey & Minnie\'s Runaway Railway' }, { time: '08:00', type: 'spot', activity: 'Star Tours', location: 'Star Tours – The Adventures Continue, Disneyland Park, Anaheim, CA', note: '第一名必玩 / 排隊Standby / 📸 AT-AT' }, { time: '08:45', type: 'spot', activity: 'Space Mountain 太空山', location: 'Space Mountain, Disneyland Park, Anaheim, CA', note: '第二名必玩 / 使用LL / 📸 白色建築' }, { time: '09:30', type: 'spot', activity: 'Buzz Lightyear Astro Blasters', location: 'Buzz Lightyear Astro Blasters, Disneyland Park, Anaheim, CA', note: '兩人一組PK / 📸 巴斯機器人' }, { time: '10:00', type: 'spot', activity: 'Autopia 懷舊賽車', location: 'Autopia, Disneyland Park, Anaheim, CA', note: '自己踩油門 / 📸 賽車頒獎台' }, { time: '10:45', type: 'spot', activity: 'Star Wars: Rise of the Resistance', location: 'Star Wars: Rise of the Resistance, Disneyland Park, Anaheim, CA', note: '第一名必玩 / ILL付費 / 📸 風暴兵' }, { time: '11:45', type: 'spot', activity: 'Matterhorn Bobsleds', location: 'Matterhorn Bobsleds, Disneyland Park, Anaheim, CA', note: '第三名必玩 / 雪山飛車 / 📸 雪山背景' }, { time: '12:45', type: 'spot', activity: 'Mickey & Minnie\'s Runaway Railway', location: 'Mickey & Minnie\'s Runaway Railway, Disneyland Park, Anaheim, CA', note: '第三名必玩 / 卡通城 / 📸 戲院門口' }, { time: '13:30', type: 'spot', activity: 'Fantasy Faire', location: 'Fantasy Faire, Disneyland Park, Anaheim, CA', note: '與公主見面 / 📸 皇家劇院' }, { time: '13:45', type: 'spot', activity: '遊行: Celebrate Happy Cavalcade', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '迷你遊行 / 📸 大街路旁 (時間需確認APP)' }, { time: '14:30', type: 'spot', activity: 'Tiana\'s Bayou Adventure', location: 'Tiana\'s Bayou Adventure, Disneyland Park, Anaheim, CA', note: '第二名必玩 / 坐船衝瀑布 / 📸 衝下瞬間' }, { time: '15:30', type: 'spot', activity: 'Winnie the Pooh', location: 'The Many Adventures of Winnie the Pooh, Disneyland Park, Anaheim, CA', note: '溫馨療癒 / 📸 森林背景' }, { time: '16:00', type: 'spot', activity: 'Pirates of the Caribbean', location: 'Pirates of the Caribbean, Disneyland Park, Anaheim, CA', note: '經典海盜船 / 📸 紐奧良建築' }, { time: '16:45', type: 'spot', activity: 'Indiana Jones Adventure', location: 'Indiana Jones Adventure, Disneyland Park, Anaheim, CA', note: '第四名必玩 / 刺激吉普車 / 📸 神廟入口' }, { time: '17:30', type: 'spot', activity: 'Enchanted Tiki Room', location: 'Walt Disney\'s Enchanted Tiki Room, Disneyland Park, Anaheim, CA', note: '休息吹冷氣 / 📸 門口Dole Whip' }, { time: '18:00', type: 'spot', activity: 'Walt Disney - A Magical Life', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '華特機器人講故事 / 📸 大廳文物' }, { time: '21:00', type: 'spot', activity: 'Fantasmic! 水幕秀', location: 'Rivers of America, Disneyland Park, Anaheim, CA', note: '必看大秀 / 20:15卡位 / 📸 蒸汽船' }, { time: '21:30', type: 'spot', activity: '煙火秀', location: 'Sleeping Beauty Castle, Disneyland Park, Anaheim, CA', note: '城堡煙火 / 📸 城堡正前方' }, { time: '22:30', type: 'hotel', activity: '回 Airbnb', location: 'Monterey Park, CA', note: '最後一晚' }] },
+                    {
+                        date: '2/14 (六)', shortDate: '2/14', title: '👑 Disneyland 終極老闆攻略', heroImage: '圖片/迪士尼圖片.png', items: [
+                            { time: '06:20', type: 'transport', activity: '🚗 第一階段：交通與入園', location: 'Harbor Blvd Guest Drop Off, Anaheim, CA', note: '出發：叫車設定目的地 "Harbor Blvd Guest Drop Off"\n（唯一指定下車點）', link: 'https://www.google.com/maps/dir/Disneyland+Drop+Off,+Harbor+Boulevard,+Anaheim,+CA/Matterhorn+Bobsleds,+Anaheim,+CA/Buzz+Lightyear+Astro+Blasters,+Anaheim,+CA/Mickey+%26+Minnie\'s+Runaway+Railway,+Anaheim,+CA/Red+Rose+Taverne,+South+Harbor+Boulevard,+Anaheim,+CA/Space+Mountain,+Anaheim,+CA/Tiana\'s+Bayou+Adventure,+Anaheim,+CA/Pirates+of+the+Caribbean,+Anaheim,+CA/Indiana+Jones+Adventure,+Anaheim,+CA/Rivers+of+America,+Anaheim,+CA/@33.8118442,-117.9247466,16z/data=!3m1!4b1!4m62!4m61!1m5!1m1!1s0x80dcd7d660e10751:0x5d91c99b61f70e5f!2m2!1d-117.9159676!2d33.8090532!1m5!1m1!1s0x80dcd7d06126930f:0x3953569727402128!2m2!1d-117.9176378!2d33.812678!1m5!1m1!1s0x80dcd7ce60682223:0xa39211043329241b!2m2!1d-117.9184742!2d33.8119853!1m5!1m1!1s0x80dcd7a4d6205731:0x228f24419f610363!2m2!1d-117.9184179!2d33.8146743!1m5!1m1!1s0x80dcd76c3725514f:0xb9da50893081e77f!2m2!1d-117.9193259!2d33.8130985!1m5!1m1!1s0x80dcd7ce884e9d7d:0x3470659630b92176!2m2!1d-117.9171926!2d33.811053!1m5!1m1!1s0x80dcd7c5693411f3:0xd975d04523927625!2m2!1d-117.9231267!2d33.8115688!1m5!1m1!1s0x80dcd7cff7319765:0x24072234053d2d2a!2m2!1d-117.9213824!2d33.8110291!1m5!1m1!1s0x80dcd7d00f6844c3:0xc7d64379a0229340!2m2!1d-117.9202511!2d33.8112347!1m5!1m1!1s0x80dcd7cf87295769:0x877d945398235237!2m2!1d-117.9216447!2d33.8119335!3e2' },
+                            { time: '07:00', type: 'transport', activity: '抵達 → Harbor 側安檢 (Security)', location: 'Disneyland Park, Anaheim, CA', note: '下車後直接過 Harbor 側安檢（最快）' },
+                            { time: '07:30', type: 'spot', activity: '閘門排隊', location: 'Disneyland Park Main Entrance, Anaheim, CA', note: '抵達樂園入口閘門，準備刷票' },
+                            { time: '07:45', isStrategy: true, activity: '📱 LL 快速通關：搶票時間表 ⏰', note: '07:45 (入園秒搶)：Space Mountain (太空山)\n目標時段：鎖定早上 09:30-10:30\n說明：剛好配合你從星際大戰區走去明日世界的時間\n\n09:45 (進太空山刷卡後)：Tiana\'s Bayou Adventure\n⚠️ 關鍵動作：一刷過太空山的閘門，邊走邊搶這張！\n預期時段：13:30-15:00 (下午場)，完美！\n\n11:45 (鬧鐘/或進 Tiana 後)：Mickey & Minnie\'s Runaway Railway\n目標時段：中午 12:30-13:30 (午餐後)\n\n13:45 (進米奇後)：Indiana Jones Adventure 👈\n⚠️ 絕對選 Indy，不要選巴斯光年！\n目標時段：下午 15:30-16:30\n\n路線變更：往左前方 (Frontierland / Galaxy\'s Edge) 繩索區等待' },
+                            { time: '08:00', isStrategy: true, activity: '🚀 Phase 1：星戰開局', note: 'Rope Drop！入園靠左，直衝 Galaxy\'s Edge\n\n目標：08:00-09:00 完成星戰區' },
+                            { time: '08:00', type: 'spot', activity: '📸 [攝影師點 1] 千年鷹號 (Millennium Falcon)', location: 'Star Wars: Galaxy\'s Edge, Disneyland Park, Anaheim, CA', note: '位置：飛船正前方\n指令：找穿背心的攝影師，跟他說 "Magic Shot, please!"\n（他可能會讓你手裡出現「尤達寶寶」或「Porg 鳥」）' },
+                            { time: '08:10', type: 'spot', activity: 'Millennium Falcon: Smugglers Run 千年鷹號', location: 'Star Wars: Galaxy\'s Edge, Disneyland Park, Anaheim, CA', note: '趁開園沒人，用走的進去玩（約 15-20 分）' },
+                            { time: '08:40', type: 'spot', activity: '離開星戰區，大步走向 Tomorrowland', location: 'Star Wars: Galaxy\'s Edge, Disneyland Park, Anaheim, CA', note: '前往明日世界' },
+                            { time: '09:00', isStrategy: true, activity: '🪐 Phase 2：明日世界・全區清空', note: '目標：11:00 以前離開這裡，今天就不用再來了！' },
+                            { time: '09:00', type: 'spot', activity: 'Matterhorn Bobsleds 雪怪雪橇', location: 'Matterhorn Bobsleds, Disneyland Park, Anaheim, CA', note: '全天唯一硬仗（約 40 分），忍耐一下！\n📸 雪山背景' },
+                            { time: '09:45', type: 'spot', activity: 'Space Mountain 太空山', location: 'Space Mountain, Disneyland Park, Anaheim, CA', note: '🌟 使用 LL（07:45 搶的票）\n免排隊直接進場！\n\n⚠️ 關鍵動作：進去閘門後，馬上拿出手機搶 Tiana！\n📸 白色建築' },
+                            { time: '09:50', type: 'spot', activity: '🎬 [設施照 1] 太空山抓拍', location: 'Space Mountain, Disneyland Park, Anaheim, CA', note: '位置：雲霄飛車結束後的出口走廊\n動作：牆上螢幕會顯示你的照片，記下 8 位數編號，輸入 App 即可下載' },
+                            { time: '10:00', type: 'spot', activity: '📸 [攝影師點 2] 漂浮石球 / 明日世界入口', location: 'Tomorrowland, Disneyland Park, Anaheim, CA', note: '位置：明日世界入口處\n找攝影師幫你拍照' },
+                            { time: '10:15', type: 'spot', activity: 'Autopia 賽車', location: 'Autopia, Disneyland Park, Anaheim, CA', note: '就在太空山附近 / 📸 賽車頒獎台' },
+                            { time: '10:45', type: 'spot', activity: 'Star Tours 或 Buzz Lightyear', location: 'Tomorrowland, Disneyland Park, Anaheim, CA', note: '這兩項消化快，挑一個玩\n或者準備去吃飯 / 📸 AT-AT' },
+                            { time: '11:00', isStrategy: true, activity: '🏰 Phase 3：城堡與午餐', note: '穿過鐵軌隧道進入 Toontown (卡通城)\n往城堡方向移動' },
+                            { time: '11:00', type: 'spot', activity: '📸 [攝影師點 3] 華特迪士尼銅像 (Partners Statue)', location: 'Sleeping Beauty Castle, Disneyland Park, Anaheim, CA', note: '位置：城堡正前方的圓環，華特牽著米奇的銅像\n指令：這是經典中的經典，背景是城堡' },
+                            { time: '11:10', type: 'spot', activity: '📸 [攝影師點 4] 石中劍 (Sword in the Stone)', location: 'Fantasyland, Disneyland Park, Anaheim, CA', note: '位置：旋轉木馬正前方\n動作：演一下拔不出劍的樣子，攝影師會幫你抓角度' },
+                            { time: '11:30', type: 'food', activity: '午餐：Red Rose Taverne 紅玫瑰餐廳', location: 'Red Rose Taverne, Disneyland Park, Anaheim, CA', note: '📍 推薦：Beast\'s Breakfast Burger\n📱 務必用 App Mobile Order 點餐\n💡 刷卡選 No Tip' },
+                            { time: '12:30', type: 'spot', activity: 'Mickey & Minnie\'s Runaway Railway 米奇米妮脫軌鐵路', location: 'Mickey & Minnie\'s Runaway Railway, Disneyland Park, Anaheim, CA', note: '🌟 使用 LL（早上第 3 順位搶的票）\n📸 戲院門口' },
+                            { time: '13:30', isStrategy: true, activity: '🤠 Phase 4：下午 LL 連發', note: '這時候園區人最多，但你手上都是 LL 神票\n\n往最左邊的 Critter Country 移動' },
+                            { time: '14:00', type: 'spot', activity: 'Tiana\'s Bayou Adventure 蒂安娜河灣歷險', location: 'Tiana\'s Bayou Adventure, Disneyland Park, Anaheim, CA', note: '🌟 使用 LL（09:45 在太空山門口搶到的）\n這時候玩剛好！\n✔ 記得穿雨衣！/ 📸 衝下瞬間' },
+                            { time: '14:20', type: 'spot', activity: '🎬 [設施照 2] 蒂安娜最後一衝', location: 'Tiana\'s Bayou Adventure, Disneyland Park, Anaheim, CA', note: '位置：最後那個大瀑布衝下來的時候\n動作：看鏡頭、雙手舉高！\n（這張照片通常會自動連結到你的 App，如果沒有，出口處記下編號）' },
+                            { time: '15:00', type: 'spot', activity: '往 Adventureland 移動', location: 'Adventureland, Disneyland Park, Anaheim, CA', note: '準備玩印第安納瓊斯' },
+                            { time: '15:30', type: 'spot', activity: 'Indiana Jones Adventure 印第安納瓊斯', location: 'Indiana Jones Adventure, Disneyland Park, Anaheim, CA', note: '🌟 使用 LL（13:45 搶到的）\n越過 90 分鐘的人龍直接進場！\n📸 神廟入口' },
+                            { time: '16:30', type: 'spot', activity: 'Pirates of the Caribbean 加勒比海盜', location: 'Pirates of the Caribbean, Disneyland Park, Anaheim, CA', note: '排隊約 30 分 / 📸 紐奧良建築' },
+                            { time: '17:00', isStrategy: true, activity: '🎈 Phase 5：美國大街與煙火', note: '腳最痠的時候 → 休息吃冰\n準備迎接壓軸表演！' },
+                            { time: '17:00', type: 'spot', activity: '📸 [攝影師點 5] 美國大街 (Main Street USA)', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '位置：入口處的火車站前，或大街中央\n指令：傍晚燈亮起來時拍最美。如果看到拿氣球的工作人員，請攝影師幫你拍一張「抓氣球」的照片' },
+                            { time: '17:30', type: 'spot', activity: 'Enchanted Tiki Room 魔幻提基屋', location: 'Walt Disney\'s Enchanted Tiki Room, Disneyland Park, Anaheim, CA', note: '吃 Dole Whip 鳳梨冰淇淋休息 / 📸 提基鳥' },
+                            { time: '18:00', type: 'food', activity: '晚餐：Tiana\'s Palace 或 Jolly Holiday', location: 'Main Street, U.S.A., Disneyland Park, Anaheim, CA', note: '都在美國大街，方便等煙火' },
+                            { time: '19:00', type: 'shop', activity: '逛街購物 Main Street Emporium', location: 'Main Street Emporium, Disneyland Park, Anaheim, CA', note: '買 70 週年商品' },
+                            { time: '20:15', type: 'spot', activity: '前往 Rivers of America 佔位子', location: 'Rivers of America, Disneyland Park, Anaheim, CA', note: '準備看 Fantasmic!' },
+                            { time: '21:00', type: 'spot', activity: 'Fantasmic! 幻想奇觀水幕秀', location: 'Rivers of America, Disneyland Park, Anaheim, CA', note: '必看！水幕投影秀 / 📸 蒸汽船' },
+                            { time: '21:30', type: 'spot', activity: 'Wondrous Journeys 煙火秀', location: 'Sleeping Beauty Castle, Disneyland Park, Anaheim, CA', note: '【原地不動】\nFantasmic 看完直接抬頭看 = 最省力\n水幕投影版 / 📸 城堡正前方' },
+                            { time: '22:00', type: 'shop', activity: '購物 World of Disney 或回飯店', location: 'Disneyland Park, Anaheim, CA', note: '最後採購或直接回去休息' },
+                            { time: '22:30', type: 'hotel', activity: '回 Airbnb', location: 'Monterey Park, CA', note: '最後一晚，好好休息準備登船！' },
+                            { time: '', isStrategy: true, activity: '💡 老闆級拍照密技（必讀）', note: '✔ 一定要問 "Magic Shot"：每一位攝影師都有不同的特效（手裡出現氣球、辛巴、小精靈），不問他們不一定會幫你做。\n\n✔ 不用排隊找攝影師：城堡前面通常有 3-4 個攝影師，如果中間那個排很多人，去旁邊一點的，背景也是城堡，完全不用等。\n\n✔ 設施照片 (Ride Photos)：這是 LL 最回本的地方！一張原本要賣 $15 美金，你現在全部免費。Space Mountain 和 Tiana 記得要擺好 Pose。' },
+                            { time: '', isStrategy: true, activity: '🗺️ 文字版導航指引', note: '入園後：不要右轉！穿過左邊拱門 (Frontierland/Adventureland 方向)\n\n去千年鷹號：沿 Frontierland 河岸走 → 經過 Big Thunder Mountain 入口 → 繼續往後走進入 Galaxy\'s Edge → 看到真實比例千年鷹號飛船，排隊入口在飛船旁\n\n去雪怪/明日世界：從星際大戰區另一出口 (往 Fantasyland) 走出 → 經過美女與野獸城堡側面 → 看到 Matterhorn\n\n之後路線：卡通城 → 紅玫瑰 → 太空山 → Tiana' },
+                            { time: '', isStrategy: true, activity: '✅ 全日 Checklist (出發前檢查)', note: '□ App 綁定：門票與信用卡是否已綁定 Disneyland App？\n□ 交通預約：前一晚是否預約了 06:20 的 Uber？\n□ 雨衣準備：為了 Tiana 設施，是否帶了輕便雨衣？\n□ 行動電源：搶票耗電，是否帶了行動電源？\n□ 鬧鐘設定：是否設好 10:00、12:00、14:00 的搶票鬧鐘？\n□ 鞋子檢查：是否穿了最舒服的舊鞋子？' }
+                        ]
+                    },
                     { date: '2/15 (日)', shortDate: '2/15', title: '登船日 (NCL) - 搶頭香', items: [{ time: '09:00', type: 'transport', activity: '退房前往港口', location: 'Monterey Park, CA', note: '提早出發！目標 10:00 抵達' }, { time: '10:00', type: 'spot', activity: '抵達港口 & 托運行李', location: '100 Swinford St, San Pedro, CA 90731', note: 'World Cruise Center / Porters 剛好開始收件。絕對頭香，目標拿到 Boarding Group 1！' }, { time: '11:00', type: 'transport', activity: '登船手續 (Check-in)', location: 'World Cruise Center, 100 Swinford St, San Pedro, CA 90731', note: '等待叫號，準備登船午餐' }, { time: '16:00', type: 'boat', activity: '郵輪離港', location: 'World Cruise Center, 100 Swinford St, San Pedro, CA 90731', note: '開始海上假期' }] },
                     { date: '2/16 (一)', shortDate: '2/16', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '泳池、賽車、雷射槍' }, { time: '21:30', type: 'spot', activity: '秀: ICONS', location: 'Bliss Theater, NCL Bliss', note: '已預約 (Reservation 2 pax)' }] },
                     { date: '2/17 (二)', shortDate: '2/17', title: '海上巡遊 At Sea', items: [{ time: '全天', type: 'boat', activity: '享受船上設施', location: 'NCL Bliss', note: '悠閒的一天，準備明天抵達墨西哥' }] },
@@ -1302,12 +1377,12 @@
 
                 const transportPlan = ref([
                     { date: '2/11', route: '機場 → 飯店', time: '20:30', type: 'Hotel Shuttle', icon: '🚌', cost: '免費', dist: '15分 (3km)', note: '無需代碼，行李小費約 $2/件' },
-                    { date: '2/12', route: '飯店 → 房源', time: '11:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '45分 (38km)', strategy: '使用 Uber: cn0sq ($5 OFF) 或 FTUBERUS2026 (30% OFF)' },
-                    { date: '2/12', route: '房源 → 市區', time: '13:15', type: 'Waymo x 2', icon: '🤖', cost: '$25 - $35', dist: '20分 (12km)', strategy: '使用 Waymo: ERIC4NLG (折 $10)' },
-                    { date: '2/13', route: '房源 → Outlet', time: '11:00', type: 'Waymo x 2', icon: '🤖', cost: '$15 - $25', dist: '15分 (9km)', strategy: '使用 Waymo: JORGENMF5 (折 $10)' },
-                    { date: '2/14', route: '房源 → 迪士尼', time: '06:45', type: 'Lyft x 2', icon: '🚗', cost: '$45 - $55', dist: '40分 (35km)', strategy: '使用 Lyft: LA2026 (首趟 5 折) 或 NEWUSER10 (折 $10)' },
-                    { date: '2/15', route: '房源 → 港口', time: '09:00', type: 'Uber XL x 2', icon: '🚙', cost: '$70 - $90', dist: '50分 (48km)', strategy: '提早出發！目標 10:00 抵達搶頭香 (Boarding Group 1)' },
-                    { date: '2/22', route: '港口 → 機場', time: '09:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '40分 (35km)', strategy: '讓第四位新團員用 Uber 首搭折扣' }
+                    { date: '2/12', route: '飯店 → 房源', time: '11:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '45分 (38km)', from: '8620 Airport Blvd, Los Angeles, CA 90045', to: 'Monterey Park, CA 91754', strategy: '使用 Uber: cn0sq ($5 OFF) 或 FTUBERUS2026 (30% OFF)' },
+                    { date: '2/12', route: '房源 → 市區', time: '13:15', type: 'Waymo x 2', icon: '🤖', cost: '$25 - $35', dist: '20分 (12km)', from: 'Monterey Park, CA 91754', to: '800 N Alameda St, Los Angeles, CA 90012', strategy: '使用 Waymo: ERIC4NLG (折 $10)' },
+                    { date: '2/13', route: '房源 → Outlet', time: '11:00', type: 'Waymo x 2', icon: '🤖', cost: '$15 - $25', dist: '15分 (9km)', from: 'Monterey Park, CA 91754', to: '100 Citadel Dr, Commerce, CA 90040', strategy: '使用 Waymo: JORGENMF5 (折 $10)' },
+                    { date: '2/14', route: '房源 → 迪士尼', time: '06:45', type: 'Lyft x 2', icon: '🚗', cost: '$45 - $55', dist: '40分 (35km)', from: 'Monterey Park, CA 91754', to: 'Harbor Blvd Guest Drop Off, Anaheim, CA', strategy: '使用 Lyft: LA2026 (首趟 5 折) 或 NEWUSER10 (折 $10)' },
+                    { date: '2/15', route: '房源 → 港口', time: '09:00', type: 'Uber XL x 2', icon: '🚙', cost: '$70 - $90', dist: '50分 (48km)', from: 'Monterey Park, CA 91754', to: '100 Swinford St, San Pedro, CA 90731', strategy: '提早出發！目標 10:00 抵達搶頭香 (Boarding Group 1)' },
+                    { date: '2/22', route: '港口 → 機場', time: '09:30', type: 'Uber XL x 2', icon: '🚙', cost: '$60 - $80', dist: '40分 (35km)', from: '100 Swinford St, San Pedro, CA 90731', to: 'Tom Bradley International Terminal, Los Angeles, CA', strategy: '讓第四位新團員用 Uber 首搭折扣' }
                 ]);
 
                 const promoCodes = ref([
@@ -1405,6 +1480,21 @@
                     if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 };
 
+                // Copy to Clipboard with Visual Feedback
+                const copyToClipboard = async (text, event) => {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        const button = event.currentTarget;
+                        const icon = button.querySelector('i');
+                        icon.className = 'ph-fill ph-check text-sm';
+                        setTimeout(() => {
+                            icon.className = 'ph-bold ph-copy text-sm group-hover:scale-110 transition-transform';
+                        }, 1500);
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                    }
+                };
+
                 // Google Maps Helper
                 const getGoogleMapsLink = (location) => {
                     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(location);
@@ -1436,7 +1526,7 @@
                         if (code <= 1) return 'ph-sun';
                         if (code <= 3) return 'ph-cloud-sun';
                         return 'ph-cloud-rain';
-                    }, scrollToDay, getGoogleMapsLink
+                    }, scrollToDay, getGoogleMapsLink, copyToClipboard
                 };
             }
         }).mount('#app');
